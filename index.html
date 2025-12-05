@@ -435,31 +435,7 @@
       100% { transform: scale(0.8); opacity: 0; }
     }
 
-    .loading {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      color: #fff;
-      font-size: 24px;
-      text-align: center;
-      z-index: 3000;
-    }
 
-    .spinner {
-      border: 5px solid rgba(255, 255, 255, 0.3);
-      border-top: 5px solid #fff;
-      border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      animation: spin 1s linear infinite;
-      margin: 20px auto;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
 
     .lives-display {
       display: flex;
@@ -991,7 +967,7 @@
    </div>
    <div class="kill-feed" id="killFeed"></div>
    <div class="bot-warning" id="botWarning">
-    ⚠️ BOT MATADOR ATIVO ⚠️
+    ⚠️ BOT MATADOR ATIVO ⚠�����
    </div>
    <div class="bot-timer" id="botTimer">
     <div class="bot-timer-title">
@@ -1438,15 +1414,8 @@
     async function initDataSdk() {
       if (sdkInitialized) return true;
       
-      // Aguarda o SDK estar disponível
-      let attempts = 0;
-      while (!window.dataSdk && attempts < 50) {
-        await new Promise(resolve => setTimeout(resolve, 100));
-        attempts++;
-      }
-      
       if (!window.dataSdk) {
-        showError('Servidor não disponível. Tente novamente.');
+        showError('SDK não carregado. Recarregue a página.');
         return false;
       }
       
@@ -1457,9 +1426,6 @@
           return false;
         }
         sdkInitialized = true;
-        
-        // Aguarda dados iniciais carregarem
-        await new Promise(resolve => setTimeout(resolve, 500));
         return true;
       } catch (error) {
         showError('Erro de conexão. Recarregue a página.');
@@ -1629,7 +1595,7 @@
         gameState.lives++;
         gameState.lastLifeScore += 1000;
         updateLivesDisplay();
-        showKillMessage('❤️ +1 VIDA EXTRA! (1000 pts)');
+        showKillMessage('❤��� +1 VIDA EXTRA! (1000 pts)');
       }
     }
 
@@ -2450,7 +2416,7 @@
           
           const name = document.createElement('div');
           name.className = 'admin-player-name';
-          name.textContent = player.player_name + (player.is_admin ? ' 👑' : '') + (player.alive ? ' ✅' : ' 💀');
+          name.textContent = player.player_name + (player.is_admin ? ' ��' : '') + (player.alive ? ' ✅' : ' 💀');
           
           const stats = document.createElement('div');
           stats.className = 'admin-player-stats';
@@ -2704,5 +2670,5 @@
       }
     });
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a8fbaf84337f41e',t:'MTc2NDg5NzcyNC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a8fbf5a4150f41e',t:'MTc2NDg5NzkwMy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>

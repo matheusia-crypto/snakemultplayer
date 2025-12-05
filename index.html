@@ -781,7 +781,7 @@
      <div class="game-area">
       <div class="kill-message" id="killMessage"></div>
       <canvas id="canvas" width="300" height="300"></canvas>
-      <div class="controls-grid"><button type="button" class="control-button ctrl-up" id="ctrlUp">▲</button> <button type="button" class="control-button ctrl-left" id="ctrlLeft">◄</button> <button type="button" class="control-button ctrl-right" id="ctrlRight">►</button> <button type="button" class="control-button ctrl-down" id="ctrlDown">���</button>
+      <div class="controls-grid"><button type="button" class="control-button ctrl-up" id="ctrlUp">��</button> <button type="button" class="control-button ctrl-left" id="ctrlLeft">◄</button> <button type="button" class="control-button ctrl-right" id="ctrlRight">►</button> <button type="button" class="control-button ctrl-down" id="ctrlDown">���</button>
       </div>
       <div class="game-over-modal" id="gameOverModal">
        <div class="game-over-title">
@@ -1505,18 +1505,30 @@
       ]);
     }
 
-    // Inicializar SDKs com retry
-    async function initialize() {
-      let retries = 0;
-      const maxRetries = 10;
-      
-      // Aguardar SDKs carregarem
-      while ((!window.elementSdk || !window.dataSdk) && retries < maxRetries) {
-        await new Promise(resolve => setTimeout(resolve, 100));
-        retries++;
-      }
+    // Função para aguardar SDK estar disponível
+    function waitForSdk(sdkName, timeout = 5000) {
+      return new Promise((resolve) => {
+        const startTime = Date.now();
+        
+        const checkSdk = () => {
+          if (window[sdkName]) {
+            resolve(true);
+          } else if (Date.now() - startTime > timeout) {
+            resolve(false);
+          } else {
+            setTimeout(checkSdk, 50);
+          }
+        };
+        
+        checkSdk();
+      });
+    }
 
-      if (window.elementSdk) {
+    // Inicialização principal
+    async function initialize() {
+      // Aguardar Element SDK
+      const elementSdkReady = await waitForSdk('elementSdk');
+      if (elementSdkReady && window.elementSdk) {
         window.elementSdk.init({
           defaultConfig,
           onConfigChange,
@@ -1525,24 +1537,21 @@
         });
       }
 
-      if (window.dataSdk) {
+      // Aguardar Data SDK
+      const dataSdkReady = await waitForSdk('dataSdk');
+      if (dataSdkReady && window.dataSdk) {
         await initializeApp();
       } else {
-        // Fallback: tentar novamente após 500ms
-        setTimeout(async () => {
-          if (window.dataSdk) {
-            await initializeApp();
-          }
-        }, 500);
+        showMsg('Erro: SDK não carregado. Recarregue a página.', 'error');
       }
     }
 
-    // Aguardar carregamento completo
+    // Executar após carregamento do DOM
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', initialize);
     } else {
       initialize();
     }
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a94a681201f6497',t:'MTc2NDk0OTMxNC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a94aa8467546497',t:'MTc2NDk0OTQ3OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>

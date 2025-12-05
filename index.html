@@ -1438,16 +1438,31 @@
     async function initDataSdk() {
       if (sdkInitialized) return true;
       
+      // Aguarda o SDK estar disponível
+      let attempts = 0;
+      while (!window.dataSdk && attempts < 50) {
+        await new Promise(resolve => setTimeout(resolve, 100));
+        attempts++;
+      }
+      
       if (!window.dataSdk) {
+        showError('Servidor não disponível. Tente novamente.');
         return false;
       }
       
       try {
-        await window.dataSdk.init(dataHandler);
+        const result = await window.dataSdk.init(dataHandler);
+        if (result.isError) {
+          showError('Erro ao conectar: ' + result.error.message);
+          return false;
+        }
         sdkInitialized = true;
+        
+        // Aguarda dados iniciais carregarem
+        await new Promise(resolve => setTimeout(resolve, 500));
         return true;
       } catch (error) {
-        console.error('Erro ao inicializar SDK:', error);
+        showError('Erro de conexão. Recarregue a página.');
         return false;
       }
     }
@@ -2560,36 +2575,72 @@
         return;
       }
       
-      const sdkReady = await initDataSdk();
-      if (!sdkReady) {
-        showError('Erro ao conectar ao servidor');
-        return;
-      }
+      const btn = document.getElementById('startBtn');
+      const originalText = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = '⏳ CONECTANDO...';
+      btn.style.opacity = '0.6';
+      btn.style.cursor = 'wait';
       
-      let success = false;
+      document.getElementById('authError').style.display = 'none';
+      document.getElementById('authSuccess').style.display = 'none';
       
-      if (authMode === 'register') {
-        success = await createPlayer(name, password, gameState.isAdmin);
-      } else {
-        success = await loginPlayer(name, password);
-      }
-      
-      if (!success) {
-        return;
-      }
-      
-      document.getElementById('nameInputOverlay').style.display = 'none';
-      gameState.running = true;
-      
-      setInterval(updateGame, UPDATE_INTERVAL);
-      
-      function gameLoop() {
-        render();
-        if (gameState.running) {
-          requestAnimationFrame(gameLoop);
+      try {
+        const sdkReady = await initDataSdk();
+        if (!sdkReady) {
+          btn.disabled = false;
+          btn.textContent = originalText;
+          btn.style.opacity = '1';
+          btn.style.cursor = 'pointer';
+          return;
         }
+        
+        btn.textContent = authMode === 'register' ? '⏳ CRIANDO CONTA...' : '⏳ FAZENDO LOGIN...';
+        
+        let success = false;
+        
+        if (authMode === 'register') {
+          success = await createPlayer(name, password, gameState.isAdmin);
+        } else {
+          success = await loginPlayer(name, password);
+        }
+        
+        if (!success) {
+          btn.disabled = false;
+          btn.textContent = originalText;
+          btn.style.opacity = '1';
+          btn.style.cursor = 'pointer';
+          return;
+        }
+        
+        btn.textContent = '✅ INICIANDO JOGO...';
+        
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        document.getElementById('nameInputOverlay').style.display = 'none';
+        gameState.running = true;
+        
+        btn.disabled = false;
+        btn.textContent = originalText;
+        btn.style.opacity = '1';
+        btn.style.cursor = 'pointer';
+        
+        setInterval(updateGame, UPDATE_INTERVAL);
+        
+        function gameLoop() {
+          render();
+          if (gameState.running) {
+            requestAnimationFrame(gameLoop);
+          }
+        }
+        gameLoop();
+      } catch (error) {
+        showError('Erro inesperado. Recarregue a página.');
+        btn.disabled = false;
+        btn.textContent = originalText;
+        btn.style.opacity = '1';
+        btn.style.cursor = 'pointer';
       }
-      gameLoop();
     });
 
     document.getElementById('restartBtn').addEventListener('click', async () => {
@@ -2645,5 +2696,5 @@
       }
     });
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a8fa5918410f41e',t:'MTc2NDg5Njg0Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a8fa96886e8f41e',t:'MTc2NDg5NzAwNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>

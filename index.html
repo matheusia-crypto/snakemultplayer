@@ -926,7 +926,7 @@
       Crie sua conta ou faça login!
      </div><label class="input-label" for="nameInput">Nome do Jogador</label> <input type="text" id="nameInput" class="name-input" placeholder="Seu nome" maxlength="15"> <label class="input-label" for="passwordInput">Senha</label> <input type="password" id="passwordInput" class="name-input" placeholder="Sua senha">
      <div class="error-message" id="authError"></div>
-     <div class="success-message" id="authSuccess"></div><br><button class="start-btn" id="startBtn">CRIAR CONTA E JOGAR</button> <button class="login-mode-btn" id="loginModeBtn">J�� TENHO CONTA - FAZER LOGIN</button> <button class="store-btn" id="storeBtn">🛒 LOJA DE VIDAS</button> <button class="admin-btn" id="adminBtn">👑 ADMIN</button>
+     <div class="success-message" id="authSuccess"></div><br><button class="start-btn" id="startBtn">CRIAR CONTA E JOGAR</button> <button class="login-mode-btn" id="loginModeBtn">JÁ TENHO CONTA - FAZER LOGIN</button> <button class="store-btn" id="storeBtn">🛒 LOJA DE VIDAS</button> <button class="admin-btn" id="adminBtn">👑 ADMIN</button>
     </div>
    </div>
    <canvas id="gameCanvas" width="360" height="640"></canvas>
@@ -943,7 +943,7 @@
     <div class="stat"><span class="stat-label">🏆 Rank:</span> <span class="stat-value" id="rank">#-</span>
     </div>
     <div class="stat"><span class="stat-label">❤️ Vidas:</span>
-     <div class="lives-display" id="livesDisplay"><span class="heart">❤��</span> <span class="heart">❤️</span> <span class="heart">❤️</span>
+     <div class="lives-display" id="livesDisplay"><span class="heart">❤️</span> <span class="heart">❤️</span> <span class="heart">❤️</span>
      </div>
     </div>
     <div class="next-life-info" id="nextLifeInfo">
@@ -952,7 +952,7 @@
    </div>
    <div class="leaderboard">
     <div class="leaderboard-title">
-     ���� TOP JOGADORES
+     🏆 TOP JOGADORES
     </div>
     <div id="leaderboardList"></div>
    </div>
@@ -1030,7 +1030,7 @@
     </div>
     <div class="store-item">
      <div class="store-item-title">
-      ��️ 1 Vida Extra
+      ❤️ 1 Vida Extra
      </div>
      <div class="store-item-desc">
       Continue jogando mesmo após morrer!
@@ -1099,53 +1099,6 @@
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
     
-    // Música de fundo usando Web Audio API
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    let musicPlaying = false;
-    
-    function playAdventureMusic() {
-      if (musicPlaying) return;
-      musicPlaying = true;
-      
-      // Melodia aventureira em loop
-      const notes = [
-        {freq: 523.25, time: 0.0, duration: 0.2},   // C5
-        {freq: 659.25, time: 0.2, duration: 0.2},   // E5
-        {freq: 783.99, time: 0.4, duration: 0.2},   // G5
-        {freq: 1046.50, time: 0.6, duration: 0.3},  // C6
-        {freq: 783.99, time: 0.9, duration: 0.2},   // G5
-        {freq: 659.25, time: 1.1, duration: 0.2},   // E5
-        {freq: 587.33, time: 1.3, duration: 0.3},   // D5
-        {freq: 523.25, time: 1.6, duration: 0.4},   // C5
-      ];
-      
-      function playLoop() {
-        const startTime = audioContext.currentTime;
-        
-        notes.forEach(note => {
-          const oscillator = audioContext.createOscillator();
-          const gainNode = audioContext.createGain();
-          
-          oscillator.connect(gainNode);
-          gainNode.connect(audioContext.destination);
-          
-          oscillator.type = 'square';
-          oscillator.frequency.value = note.freq;
-          
-          gainNode.gain.setValueAtTime(0, startTime + note.time);
-          gainNode.gain.linearRampToValueAtTime(0.08, startTime + note.time + 0.01);
-          gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + note.time + note.duration);
-          
-          oscillator.start(startTime + note.time);
-          oscillator.stop(startTime + note.time + note.duration);
-        });
-        
-        setTimeout(playLoop, 2000);
-      }
-      
-      playLoop();
-    }
-    
     // Config
     const GRID_SIZE = 10;
     const GAME_WIDTH = canvas.width;
@@ -1153,24 +1106,20 @@
     const UPDATE_INTERVAL = 100;
     const FOOD_COUNT = 30;
     const PLAYER_INACTIVE_TIME = 10000;
-    const KILLER_BOT_INTERVAL = 3 * 60 * 60 * 1000; // 3 horas em milissegundos
-    const KILLER_BOT_DURATION = 2 * 60 * 1000; // Bot fica ativo por 2 minutos
+    const KILLER_BOT_INTERVAL = 3 * 60 * 60 * 1000;
+    const KILLER_BOT_DURATION = 2 * 60 * 1000;
     
-    // Estado de autenticação
-    let authMode = 'register'; // 'register' ou 'login'
-    
-    // Variável global para armazenar todos os jogadores
+    let authMode = 'register';
     let allPlayersData = [];
     let adminUpdateInterval = null;
     
-    // Estado do jogo
     let gameState = {
       myPlayerId: null,
       myPlayer: null,
       myPassword: null,
       players: [],
       foods: [],
-      lifePowerUps: [], // Power-ups de vida no mapa
+      lifePowerUps: [],
       running: false,
       kills: 0,
       lives: 3,
@@ -1179,15 +1128,13 @@
       isAdmin: false,
       killerBot: null,
       killerBotActive: false,
-      botLifesDropped: false // Flag para controlar se já dropou vidas no ciclo atual
+      botLifesDropped: false
     };
 
-    // Gerar ID único
     function generateId() {
       return Date.now().toString(36) + Math.random().toString(36).substr(2);
     }
 
-    // Hash simples de senha (apenas para exemplo - não é criptografia forte)
     function hashPassword(password) {
       let hash = 0;
       for (let i = 0; i < password.length; i++) {
@@ -1198,7 +1145,6 @@
       return hash.toString(36);
     }
 
-    // Cores aleatórias
     const COLORS = [
       '#ff6b6b', '#4ecdc4', '#45b7d1', '#ffd93d', '#6bcf7f',
       '#a29bfe', '#fd79a8', '#fdcb6e', '#00b894', '#e17055'
@@ -1208,7 +1154,6 @@
       return COLORS[Math.floor(Math.random() * COLORS.length)];
     }
 
-    // Criar comida
     function createFood() {
       return {
         x: Math.floor(Math.random() * (GAME_WIDTH / GRID_SIZE)) * GRID_SIZE,
@@ -1216,12 +1161,10 @@
       };
     }
 
-    // Inicializar comidas
     for (let i = 0; i < FOOD_COUNT; i++) {
       gameState.foods.push(createFood());
     }
 
-    // Criar Bot Matador
     function createKillerBot() {
       const startX = Math.floor(Math.random() * (GAME_WIDTH / GRID_SIZE)) * GRID_SIZE;
       const startY = Math.floor(Math.random() * (GAME_HEIGHT / GRID_SIZE)) * GRID_SIZE;
@@ -1238,7 +1181,7 @@
           {x: startX - GRID_SIZE, y: startY},
           {x: startX - GRID_SIZE * 2, y: startY}
         ],
-        length: 50, // Bot começa muito grande!
+        length: 50,
         color: '#000000',
         alive: true,
         score: 9999,
@@ -1246,16 +1189,14 @@
       };
     }
 
-    // Ativar Bot Matador
     function activateKillerBot() {
       if (gameState.killerBotActive) return;
       
       gameState.killerBot = createKillerBot();
       gameState.killerBotActive = true;
-      gameState.botLifesDropped = false; // Resetar flag ao ativar novo bot
+      gameState.botLifesDropped = false;
       
-      // Avisos antes do bot aparecer
-      showKillMessage('��️ ALERTA: BOT MATADOR EM 30 SEGUNDOS!');
+      showKillMessage('⚠️ ALERTA: BOT MATADOR EM 30 SEGUNDOS!');
       
       setTimeout(() => {
         if (gameState.killerBotActive) {
@@ -1269,13 +1210,11 @@
           document.getElementById('botWarning').classList.add('show');
           document.getElementById('botTimer').classList.add('show');
           
-          // Remover aviso após 5 segundos
           setTimeout(() => {
             document.getElementById('botWarning').classList.remove('show');
           }, 5000);
           
-          // Timer de contagem regressiva
-          let timeLeft = KILLER_BOT_DURATION / 1000; // em segundos
+          let timeLeft = KILLER_BOT_DURATION / 1000;
           const timerInterval = setInterval(() => {
             if (!gameState.killerBotActive) {
               clearInterval(timerInterval);
@@ -1295,29 +1234,24 @@
         }
       }, 30000);
       
-      // Desativar bot após duração
       setTimeout(() => {
         deactivateKillerBot();
       }, KILLER_BOT_DURATION);
     }
 
-    // Desativar Bot Matador
     function deactivateKillerBot(wasKilled = false) {
       if (!gameState.killerBotActive) return;
       
-      // Apenas se foi morto por jogador é que dropa as 30 vidas
       if (wasKilled && !gameState.botLifesDropped) {
         const botX = gameState.killerBot ? gameState.killerBot.x : GAME_WIDTH / 2;
         const botY = gameState.killerBot ? gameState.killerBot.y : GAME_HEIGHT / 2;
         
-        // Dropar 30 vidas no mapa (apenas se bot foi MORTO, não se o tempo acabou)
         for (let i = 0; i < 30; i++) {
           const angle = (i / 30) * Math.PI * 2;
           const radius = 100 + Math.random() * 100;
           let lifeX = Math.round((botX + Math.cos(angle) * radius) / GRID_SIZE) * GRID_SIZE;
           let lifeY = Math.round((botY + Math.sin(angle) * radius) / GRID_SIZE) * GRID_SIZE;
           
-          // Garantir que fique dentro do mapa
           lifeX = Math.max(0, Math.min(GAME_WIDTH - GRID_SIZE, lifeX));
           lifeY = Math.max(0, Math.min(GAME_HEIGHT - GRID_SIZE, lifeY));
           
@@ -1328,11 +1262,9 @@
           });
         }
         
-        // Marcar que já dropou vidas neste ciclo
         gameState.botLifesDropped = true;
         showKillMessage('💎 BOT DERROTADO! 30 VIDAS ESPALHADAS! 💎');
       } else if (!wasKilled) {
-        // Se o tempo acabou, o bot some sem dropar nada
         showKillMessage('⏰ TEMPO DO BOT ACABOU! ELE FUGIU! 💨');
       }
       
@@ -1342,13 +1274,11 @@
       document.getElementById('botWarning').classList.remove('show');
     }
 
-    // Atualizar Bot Matador (IA simples que persegue jogadores)
     function updateKillerBot() {
       if (!gameState.killerBot || !gameState.killerBotActive) return;
       
       const bot = gameState.killerBot;
       
-      // Encontrar jogador mais próximo
       let closestPlayer = gameState.myPlayer && gameState.myPlayer.alive ? gameState.myPlayer : null;
       let minDist = closestPlayer ? 
         Math.abs(bot.x - closestPlayer.x) + Math.abs(bot.y - closestPlayer.y) : 
@@ -1363,7 +1293,6 @@
         }
       }
       
-      // Perseguir jogador mais próximo
       if (closestPlayer) {
         const dx = closestPlayer.x - bot.x;
         const dy = closestPlayer.y - bot.y;
@@ -1383,7 +1312,6 @@
         }
       }
       
-      // Atualizar posição do bot
       bot.direction = bot.nextDirection;
       
       let newX = bot.x;
@@ -1394,7 +1322,6 @@
       if (bot.direction === 'left') newX -= GRID_SIZE;
       if (bot.direction === 'right') newX += GRID_SIZE;
       
-      // Wrap around
       if (newX < 0) newX = GAME_WIDTH - GRID_SIZE;
       if (newX >= GAME_WIDTH) newX = 0;
       if (newY < 0) newY = GAME_HEIGHT - GRID_SIZE;
@@ -1404,35 +1331,30 @@
       bot.y = newY;
       bot.segments.unshift({x: newX, y: newY});
       
-      // Bot come comida para crescer mais
       for (let i = gameState.foods.length - 1; i >= 0; i--) {
         const food = gameState.foods[i];
         if (food.x === newX && food.y === newY) {
-          bot.length += 2; // Bot cresce mais rápido
+          bot.length += 2;
           gameState.foods.splice(i, 1);
           gameState.foods.push(createFood());
           break;
         }
       }
       
-      // Manter tamanho do bot
       while (bot.segments.length > bot.length) {
         bot.segments.pop();
       }
       
-      // Verificar colisão do bot com jogadores
       if (gameState.myPlayer && gameState.myPlayer.alive) {
         const myHead = {x: gameState.myPlayer.x, y: gameState.myPlayer.y};
         
-        // Jogador pode derrotar o bot se for maior
         if (gameState.myPlayer.length > bot.length) {
-          // Verificar se comeu a cabeça do bot
           if (myHead.x === bot.x && myHead.y === bot.y) {
             showKillMessage('🏆 VOCÊ DERROTOU O BOT MATADOR! 🏆');
             gameState.myPlayer.score += 1000;
             gameState.totalScore += 1000;
             gameState.myPlayer.length += Math.floor(bot.length / 2);
-            deactivateKillerBot(true); // true = foi morto por jogador
+            deactivateKillerBot(true);
             checkLifeBonus();
             updateLivesDisplay();
             return;
@@ -1446,7 +1368,6 @@
           return;
         }
         
-        // Bot mata qualquer jogador que encostar nele
         for (const seg of gameState.myPlayer.segments) {
           if (bot.segments.some(botSeg => botSeg.x === seg.x && botSeg.y === seg.y)) {
             gameOver('💀 VOCÊ FOI ELIMINADO PELO BOT MATADOR!');
@@ -1456,20 +1377,16 @@
       }
     }
 
-    // Iniciar ciclo do bot (a cada 3 horas)
     setInterval(() => {
       activateKillerBot();
     }, KILLER_BOT_INTERVAL);
     
-    // Para testes: ativar bot após 10 segundos do jogo começar
-    // Remova ou comente esta linha para usar apenas o intervalo de 3 horas
     setTimeout(() => {
       if (gameState.running) {
         activateKillerBot();
       }
     }, 10000);
 
-    // Data SDK Handler
     const dataHandler = {
       onDataChanged(data) {
         allPlayersData = data;
@@ -1499,7 +1416,6 @@
       }
     };
 
-    // Gerar segmentos
     function generateSegments(headX, headY, direction, length) {
       const segments = [{x: headX, y: headY}];
       let x = headX;
@@ -1521,10 +1437,13 @@
       return segments;
     }
 
-    // Inicializar SDK
     let sdkInitialized = false;
     async function initDataSdk() {
       if (sdkInitialized) return true;
+      
+      if (!window.dataSdk) {
+        return false;
+      }
       
       try {
         await window.dataSdk.init(dataHandler);
@@ -1536,14 +1455,11 @@
       }
     }
 
-    // Verificar se jogador existe
     async function playerExists(name) {
       return allPlayersData.find(p => p.player_name.toLowerCase() === name.toLowerCase());
     }
 
-    // Criar jogador
     async function createPlayer(name, password, isAdmin = false) {
-      // Verificar se já existe
       const existing = await playerExists(name);
       if (existing) {
         showError('Este nome já está em uso! Escolha outro nome.');
@@ -1608,7 +1524,6 @@
       return true;
     }
 
-    // Login do jogador
     async function loginPlayer(name, password) {
       const existing = await playerExists(name);
       
@@ -1653,7 +1568,6 @@
       gameState.kills = 0;
       gameState.lastLifeScore = Math.floor(gameState.totalScore / 1000) * 1000;
       
-      // Atualizar no servidor
       const result = await window.dataSdk.update({
         ...existing,
         x: startX,
@@ -1675,7 +1589,6 @@
       return true;
     }
 
-    // Atualizar display de vidas
     function updateLivesDisplay() {
       const livesDisplay = document.getElementById('livesDisplay');
       livesDisplay.innerHTML = '';
@@ -1695,7 +1608,6 @@
       }
     }
 
-    // Verificar bonus de vida
     function checkLifeBonus() {
       const pointsSinceLastLife = gameState.totalScore - gameState.lastLifeScore;
       if (pointsSinceLastLife >= 1000) {
@@ -1706,14 +1618,13 @@
       }
     }
 
-    // Atualizar jogador no servidor
     async function updatePlayerOnServer() {
       if (!gameState.myPlayer || !gameState.myPlayer.alive) return;
       
       const myData = allPlayersData.find(p => p.player_id === gameState.myPlayerId);
       
       if (myData) {
-        const result = await window.dataSdk.update({
+        await window.dataSdk.update({
           ...myData,
           x: gameState.myPlayer.x,
           y: gameState.myPlayer.y,
@@ -1729,7 +1640,6 @@
       }
     }
 
-    // Marcar como morto
     async function markPlayerDead() {
       if (!gameState.myPlayer) return;
       
@@ -1748,7 +1658,6 @@
       }
     }
 
-    // Logout - salvar progresso e sair
     async function logoutPlayer() {
       if (!gameState.myPlayer) return;
       
@@ -1757,10 +1666,9 @@
       const myData = allPlayersData.find(p => p.player_id === gameState.myPlayerId);
       
       if (myData) {
-        // Salvar progresso completo sem marcar como morto
         await window.dataSdk.update({
           ...myData,
-          alive: false, // Apenas para não aparecer no jogo
+          alive: false,
           lives: gameState.lives,
           total_score: gameState.totalScore,
           last_update: Date.now()
@@ -1778,7 +1686,6 @@
       }, 1500);
     }
 
-    // Controles de teclado
     document.addEventListener('keydown', (e) => {
       if (!gameState.running || !gameState.myPlayer || !gameState.myPlayer.alive) return;
       
@@ -1796,7 +1703,6 @@
       }
     });
 
-    // Controles touch com setas
     function handleArrowPress(direction) {
       if (!gameState.running || !gameState.myPlayer || !gameState.myPlayer.alive) return;
       
@@ -1833,13 +1739,11 @@
       handleArrowPress('right');
     }, { passive: false });
 
-    // Também suporta click para desktop
     document.getElementById('arrowUp').addEventListener('click', () => handleArrowPress('up'));
     document.getElementById('arrowDown').addEventListener('click', () => handleArrowPress('down'));
     document.getElementById('arrowLeft').addEventListener('click', () => handleArrowPress('left'));
     document.getElementById('arrowRight').addEventListener('click', () => handleArrowPress('right'));
 
-    // Sistema de arrastar controles touch
     const touchControls = document.querySelector('.touch-controls');
     let isDragging = false;
     let dragStartX = 0;
@@ -1847,7 +1751,6 @@
     let controlsStartX = 0;
     let controlsStartY = 0;
 
-    // Touch events
     touchControls.addEventListener('touchstart', (e) => {
       if (e.target.classList.contains('arrow-center')) {
         isDragging = true;
@@ -1874,7 +1777,6 @@
         const newLeft = controlsStartX + deltaX;
         const newTop = controlsStartY + deltaY;
         
-        // Limitar dentro da tela
         const maxLeft = window.innerWidth - touchControls.offsetWidth;
         const maxTop = window.innerHeight - touchControls.offsetHeight;
         
@@ -1894,7 +1796,6 @@
       }
     });
 
-    // Mouse events para desktop
     touchControls.addEventListener('mousedown', (e) => {
       if (e.target.classList.contains('arrow-center')) {
         isDragging = true;
@@ -1934,9 +1835,7 @@
       }
     });
 
-    // Botão de logout
     document.getElementById('logoutBtn').addEventListener('click', () => {
-      // Modal de confirmação customizado
       const confirmOverlay = document.createElement('div');
       confirmOverlay.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: flex; align-items: center; justify-content: center; z-index: 5000;';
       
@@ -1990,9 +1889,7 @@
       document.body.appendChild(confirmOverlay);
     });
 
-    // Atualizar jogo
     function updateGame() {
-      // Atualizar bot mesmo que o jogador esteja morto
       updateKillerBot();
       
       if (!gameState.running || !gameState.myPlayer || !gameState.myPlayer.alive) return;
@@ -2036,7 +1933,6 @@
       
       let ateFood = false;
       
-      // Verificar coleta de power-ups de vida
       for (let i = gameState.lifePowerUps.length - 1; i >= 0; i--) {
         const lifePowerUp = gameState.lifePowerUps[i];
         if (lifePowerUp.x === newX && lifePowerUp.y === newY) {
@@ -2045,7 +1941,6 @@
           showKillMessage('💎 +1 VIDA COLETADA!');
           updateLivesDisplay();
           
-          // Atualizar no servidor
           const myData = allPlayersData.find(p => p.player_id === gameState.myPlayerId);
           if (myData) {
             window.dataSdk.update({
@@ -2088,7 +1983,6 @@
             gameState.totalScore += 100;
             gameState.kills++;
             
-            // Trocar cor da cobra ao eliminar
             const newColor = randomColor();
             player.color = newColor;
             
@@ -2106,7 +2000,6 @@
       updatePlayerOnServer();
     }
 
-    // Renderizar jogo
     function render() {
       ctx.fillStyle = '#1a1a2e';
       ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
@@ -2138,18 +2031,15 @@
         ctx.fill();
       });
       
-      // Renderizar power-ups de vida (corações pulsantes)
       gameState.lifePowerUps.forEach(lifePowerUp => {
         const pulse = 0.8 + Math.sin(Date.now() / 200) * 0.2;
         const size = GRID_SIZE * pulse;
         
-        // Brilho externo rosa
         ctx.fillStyle = 'rgba(255, 105, 180, 0.4)';
         ctx.beginPath();
         ctx.arc(lifePowerUp.x + GRID_SIZE/2, lifePowerUp.y + GRID_SIZE/2, size * 0.8, 0, Math.PI * 2);
         ctx.fill();
         
-        // Coração vermelho brilhante
         ctx.fillStyle = '#ff6b9d';
         ctx.font = `${size}px Arial`;
         ctx.textAlign = 'center';
@@ -2160,22 +2050,18 @@
         ctx.shadowBlur = 0;
       });
       
-      // Renderizar Bot Matador primeiro (para ficar por baixo)
       if (gameState.killerBot && gameState.killerBotActive) {
         const bot = gameState.killerBot;
         
         bot.segments.forEach((seg, i) => {
-          // Bot preto com efeito pulsante vermelho
           ctx.fillStyle = i === 0 ? '#ff0000' : '#000000';
           ctx.fillRect(seg.x, seg.y, GRID_SIZE, GRID_SIZE);
           
-          // Borda vermelha pulsante
           ctx.strokeStyle = `rgba(255, 0, 0, ${0.5 + Math.sin(Date.now() / 200) * 0.5})`;
           ctx.lineWidth = 3;
           ctx.strokeRect(seg.x, seg.y, GRID_SIZE, GRID_SIZE);
           
           if (i === 0) {
-            // Olhos vermelhos brilhantes
             ctx.fillStyle = '#ff0000';
             ctx.beginPath();
             ctx.arc(seg.x + 3, seg.y + 3, 3, 0, Math.PI * 2);
@@ -2374,7 +2260,6 @@
       }, 3000);
     }
 
-    // Toggle entre login e registro
     document.getElementById('loginModeBtn').addEventListener('click', () => {
       if (authMode === 'register') {
         authMode = 'login';
@@ -2391,7 +2276,6 @@
       document.getElementById('authSuccess').style.display = 'none';
     });
 
-    // Abrir loja
     document.getElementById('storeBtn').addEventListener('click', () => {
       document.getElementById('storeModal').classList.add('show');
     });
@@ -2448,7 +2332,6 @@
       }, 2000);
     });
 
-    // Admin
     document.getElementById('adminBtn').addEventListener('click', () => {
       const overlay = document.createElement('div');
       overlay.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: flex; align-items: center; justify-content: center; z-index: 4000;';
@@ -2524,7 +2407,6 @@
     });
 
     async function loadAdminData() {
-      const now = Date.now();
       const alivePlayers = allPlayersData.filter(p => p.alive);
       
       document.getElementById('adminTotalPlayers').textContent = allPlayersData.length;
@@ -2536,7 +2418,6 @@
       if (allPlayersData.length === 0) {
         playersList.innerHTML = '<div class="no-players-message">Nenhum jogador cadastrado ainda</div>';
       } else {
-        // Ordenar por total_score
         const sortedPlayers = [...allPlayersData].sort((a, b) => b.total_score - a.total_score);
         
         sortedPlayers.forEach(player => {
@@ -2596,7 +2477,6 @@
           kickBtn.className = 'admin-action-btn kick-btn';
           kickBtn.textContent = 'EXPULSAR';
           kickBtn.onclick = async () => {
-            // Modal de confirmação customizado
             const confirmOverlay = document.createElement('div');
             confirmOverlay.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: flex; align-items: center; justify-content: center; z-index: 5000;';
             
@@ -2646,7 +2526,6 @@
         });
       }
       
-      // Atualizar automaticamente a cada 3 segundos se o painel estiver aberto
       if (document.getElementById('adminPanel').classList.contains('show') && !adminUpdateInterval) {
         adminUpdateInterval = setInterval(() => {
           if (document.getElementById('adminPanel').classList.contains('show')) {
@@ -2659,7 +2538,6 @@
       }
     }
 
-    // Iniciar jogo
     document.getElementById('startBtn').addEventListener('click', async () => {
       const name = document.getElementById('nameInput').value.trim();
       const password = document.getElementById('passwordInput').value.trim();
@@ -2698,11 +2576,7 @@
         return;
       }
       
-      // Aguardar um pouco para mensagem de sucesso ser vista
       await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Iniciar música de fundo
-      playAdventureMusic();
       
       document.getElementById('loading').style.display = 'none';
       document.getElementById('nameInputOverlay').style.display = 'none';
@@ -2719,12 +2593,10 @@
       gameLoop();
     });
 
-    // Reiniciar
     document.getElementById('restartBtn').addEventListener('click', async () => {
       document.getElementById('gameOver').classList.remove('show');
       
       if (gameState.lives > 0) {
-        // Ainda tem vidas - reviver
         const startX = Math.floor(Math.random() * (GAME_WIDTH / GRID_SIZE)) * GRID_SIZE;
         const startY = Math.floor(Math.random() * (GAME_HEIGHT / GRID_SIZE)) * GRID_SIZE;
         
@@ -2762,14 +2634,12 @@
         updateLivesDisplay();
         gameState.running = true;
       } else {
-        // Sem vidas - voltar ao menu
         document.getElementById('nameInputOverlay').style.display = 'flex';
         document.getElementById('nameInput').value = gameState.myPlayer ? gameState.myPlayer.name : '';
         document.getElementById('passwordInput').value = '';
       }
     });
 
-    // Inicializar SDK
     (async function init() {
       const ready = await initDataSdk();
       if (ready) {
@@ -2779,12 +2649,11 @@
       }
     })();
 
-    // Limpar ao sair - não deleta mais, apenas marca como inativo
     window.addEventListener('beforeunload', async () => {
       if (gameState.myPlayerId) {
         await markPlayerDead();
       }
     });
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a8f606372d5f41e',t:'MTc2NDg5NDAxNC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a8f8e175204f41e',t:'MTc2NDg5NTg4Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>

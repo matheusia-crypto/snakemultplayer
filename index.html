@@ -435,8 +435,6 @@
       100% { transform: scale(0.8); opacity: 0; }
     }
 
-
-
     .lives-display {
       display: flex;
       align-items: center;
@@ -883,6 +881,52 @@
       font-weight: bold;
       text-shadow: 0 0 20px #fff;
     }
+
+    .connection-status {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0, 0, 0, 0.95);
+      padding: 30px 50px;
+      border-radius: 20px;
+      border: 3px solid #00ff88;
+      box-shadow: 0 0 40px rgba(0, 255, 136, 0.5);
+      text-align: center;
+      z-index: 1500;
+      display: none;
+    }
+
+    .connection-status.show {
+      display: block;
+    }
+
+    .connection-status-title {
+      font-size: 24px;
+      color: #00ff88;
+      margin-bottom: 15px;
+      font-weight: bold;
+    }
+
+    .connection-status-text {
+      font-size: 16px;
+      color: #fff;
+      margin: 10px 0;
+    }
+
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 5px solid rgba(0, 255, 136, 0.2);
+      border-top-color: #00ff88;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
   </style>
   <style>@view-transition { navigation: auto; }</style>
   <script src="/_sdk/element_sdk.js" type="text/javascript"></script>
@@ -890,6 +934,18 @@
  </head>
  <body>
   <div id="gameContainer">
+   <div class="connection-status" id="connectionStatus">
+    <div class="connection-status-title">
+     🔄 CONECTANDO AO SERVIDOR
+    </div>
+    <div class="spinner"></div>
+    <div class="connection-status-text" id="connectionAttempt">
+     Tentativa 1 de 10...
+    </div>
+    <div class="connection-status-text" style="color: #ccc; font-size: 14px; margin-top: 15px;">
+     Aguarde alguns segundos...
+    </div>
+   </div>
    <div class="name-input-overlay" id="nameInputOverlay">
     <div class="name-input-box">
      <div class="name-input-title">
@@ -899,7 +955,7 @@
       Crie sua conta ou faça login!
      </div><label class="input-label" for="nameInput">Nome do Jogador</label> <input type="text" id="nameInput" class="name-input" placeholder="Seu nome" maxlength="15"> <label class="input-label" for="passwordInput">Senha</label> <input type="password" id="passwordInput" class="name-input" placeholder="Sua senha">
      <div class="error-message" id="authError"></div>
-     <div class="success-message" id="authSuccess"></div><br><button class="start-btn" id="startBtn">CRIAR CONTA E JOGAR</button> <button class="login-mode-btn" id="loginModeBtn">JÁ TENHO CONTA - FAZER LOGIN</button> <button class="store-btn" id="storeBtn">🛒 LOJA DE VIDAS</button> <button class="admin-btn" id="adminBtn">��� ADMIN</button>
+     <div class="success-message" id="authSuccess"></div><br><button class="start-btn" id="startBtn">CRIAR CONTA E JOGAR</button> <button class="login-mode-btn" id="loginModeBtn">JÁ TENHO CONTA - FAZER LOGIN</button> <button class="store-btn" id="storeBtn">🛒 LOJA DE VIDAS</button> <button class="admin-btn" id="adminBtn">👑 ADMIN</button>
     </div>
    </div>
    <canvas id="gameCanvas" width="360" height="640"></canvas>
@@ -955,7 +1011,7 @@
       ⬇️
      </div>
      <div class="arrow-btn arrow-left" id="arrowLeft">
-      ⬅�����
+      ⬅️
      </div>
      <div class="arrow-btn arrow-right" id="arrowRight">
       ➡️
@@ -967,7 +1023,7 @@
    </div>
    <div class="kill-feed" id="killFeed"></div>
    <div class="bot-warning" id="botWarning">
-    ⚠️ BOT MATADOR ATIVO ⚠�����
+    ⚠️ BOT MATADOR ATIVO ⚠️
    </div>
    <div class="bot-timer" id="botTimer">
     <div class="bot-timer-title">
@@ -1036,7 +1092,7 @@
       💰 Sistema de Vidas Automático
      </div>
      <div style="font-size: 14px; color: #ccc;">
-      Ganhe 1 vida gr����tis a cada 1000 pontos!
+      Ganhe 1 vida grátis a cada 1000 pontos!
      </div>
     </div>
     <div style="text-align: center; color: #ccc; margin-top: 15px; font-size: 12px; padding: 10px; background: rgba(255, 255, 255, 0.05); border-radius: 8px;">
@@ -1337,7 +1393,7 @@
         const hitByBot = bot.segments.some(seg => seg.x === myHead.x && seg.y === myHead.y);
         
         if (hitByBot) {
-          gameOver('💀 VOC�� FOI ELIMINADO PELO BOT MATADOR!');
+          gameOver('💀 VOCÊ FOI ELIMINADO PELO BOT MATADOR!');
           return;
         }
         
@@ -1418,81 +1474,84 @@
       if (initPromise) return initPromise;
       
       initPromise = (async () => {
-        const maxRetries = 5;
+        const maxRetries = 10;
         let attempt = 0;
+        
+        document.getElementById('connectionStatus').classList.add('show');
         
         while (attempt < maxRetries) {
           try {
             attempt++;
+            document.getElementById('connectionAttempt').textContent = `Tentativa ${attempt} de ${maxRetries}...`;
             
-            // Aguarda o SDK carregar
+            // Aguarda o script SDK carregar completamente
             let waitTime = 0;
-            while (!window.dataSdk && waitTime < 3000) {
-              await new Promise(resolve => setTimeout(resolve, 100));
-              waitTime += 100;
+            const maxWaitTime = 10000; // 10 segundos
+            while (!window.dataSdk && waitTime < maxWaitTime) {
+              await new Promise(resolve => setTimeout(resolve, 300));
+              waitTime += 300;
             }
             
             if (!window.dataSdk) {
               if (attempt < maxRetries) {
-                await new Promise(resolve => setTimeout(resolve, 500));
+                await new Promise(resolve => setTimeout(resolve, 2000));
                 continue;
               }
-              showError('SDK não disponível. Recarregue a página.');
+              document.getElementById('connectionStatus').classList.remove('show');
+              showError('SDK não carregou. Verifique sua conexão e recarregue a página.');
               return false;
             }
             
-            const result = await window.dataSdk.init(dataHandler);
+            // Tenta inicializar o SDK
+            const result = await Promise.race([
+              window.dataSdk.init(dataHandler),
+              new Promise((_, reject) => 
+                setTimeout(() => reject(new Error('Timeout')), 10000)
+              )
+            ]);
             
             if (result.isError) {
               if (attempt < maxRetries) {
-                await new Promise(resolve => setTimeout(resolve, 1000));
+                await new Promise(resolve => setTimeout(resolve, 2500));
                 continue;
               }
-              showError('Servidor indisponível. Tente novamente.');
+              document.getElementById('connectionStatus').classList.remove('show');
+              showError('Servidor não responde. Tente novamente em alguns segundos.');
               return false;
             }
             
+            // Sucesso!
             sdkInitialized = true;
+            document.getElementById('connectionStatus').classList.remove('show');
             return true;
             
           } catch (error) {
             if (attempt < maxRetries) {
-              await new Promise(resolve => setTimeout(resolve, 1000));
+              await new Promise(resolve => setTimeout(resolve, 2500));
               continue;
             }
+            document.getElementById('connectionStatus').classList.remove('show');
             showError('Erro de conexão. Recarregue a página.');
             return false;
           }
         }
         
+        document.getElementById('connectionStatus').classList.remove('show');
         return false;
       })();
       
       return initPromise;
     }
     
-    // Inicializa automaticamente quando a página carrega
-    let autoInitStarted = false;
-    
-    async function startAutoInit() {
-      if (autoInitStarted) return;
-      autoInitStarted = true;
-      
-      await new Promise(resolve => setTimeout(resolve, 500));
+    // Auto inicialização com delay maior para GitHub Pages
+    window.addEventListener('load', async () => {
+      await new Promise(resolve => setTimeout(resolve, 1500));
       
       const success = await initDataSdk();
-      if (success) {
-        console.log('✅ Conectado ao servidor!');
-      } else {
-        console.log('⚠️ Falha na conexão. Clique em CRIAR CONTA/LOGIN para tentar novamente.');
+      if (!success) {
+        console.log('⚠️ Falha na auto-conexão. Clique em CRIAR CONTA/LOGIN para tentar novamente.');
       }
-    }
-    
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', startAutoInit);
-    } else {
-      startAutoInit();
-    }
+    });
 
     async function playerExists(name) {
       return allPlayersData.find(p => p.player_name.toLowerCase() === name.toLowerCase());
@@ -1656,7 +1715,7 @@
         gameState.lives++;
         gameState.lastLifeScore += 1000;
         updateLivesDisplay();
-        showKillMessage('❤��� +1 VIDA EXTRA! (1000 pts)');
+        showKillMessage('❤️ +1 VIDA EXTRA! (1000 pts)');
       }
     }
 
@@ -1896,7 +1955,7 @@
       statsText.innerHTML = `
         <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px; margin-bottom: 20px;">
           <div style="font-size: 18px; color: #00ff88; margin: 8px 0;">⭐ Pontos Totais: ${gameState.totalScore}</div>
-          <div style="font-size: 18px; color: #ff6b6b; margin: 8px 0;">���️ Vidas: ${gameState.lives}</div>
+          <div style="font-size: 18px; color: #ff6b6b; margin: 8px 0;">❤️ Vidas: ${gameState.lives}</div>
           <div style="font-size: 18px; color: #ffd700; margin: 8px 0;">💀 Kills: ${gameState.kills}</div>
         </div>
       `;
@@ -2305,7 +2364,7 @@
     document.getElementById('loginModeBtn').addEventListener('click', () => {
       if (authMode === 'register') {
         authMode = 'login';
-        document.getElementById('authSubtitle').textContent = 'Fa��a login com sua conta existente!';
+        document.getElementById('authSubtitle').textContent = 'Faça login com sua conta existente!';
         document.getElementById('startBtn').textContent = 'FAZER LOGIN';
         document.getElementById('loginModeBtn').textContent = 'NÃO TENHO CONTA - CRIAR NOVA';
       } else {
@@ -2344,7 +2403,7 @@
       
       window.open(`mailto:juridicofpolis@gmail.com?subject=${subject}&body=${body}`, '_blank');
       
-      showKillMessage('��� Email enviado! Aguarde confirmação');
+      showKillMessage('📧 Email enviado! Aguarde confirmação');
       setTimeout(() => {
         document.getElementById('storeModal').classList.remove('show');
       }, 2000);
@@ -2357,7 +2416,7 @@
         `Olá,\n\n` +
         `Gostaria de solicitar a compra do PACK 5 VIDAS EXTRAS no Snake Battle Royale.\n\n` +
         `Detalhes da Compra:\n` +
-        `- Produto: Pack 5 Vidas Extras ��️❤️❤️❤️❤️\n` +
+        `- Produto: Pack 5 Vidas Extras ❤️❤️❤️❤️❤️\n` +
         `- Valor: R$ 45,00\n` +
         `- Jogador: ${playerName}\n` +
         `- ID do Jogador: ${gameState.myPlayerId || 'N/A'}\n\n` +
@@ -2368,7 +2427,7 @@
       
       window.open(`mailto:juridicofpolis@gmail.com?subject=${subject}&body=${body}`, '_blank');
       
-      showKillMessage('📧 Email enviado! Aguarde confirmaç��o');
+      showKillMessage('📧 Email enviado! Aguarde confirmação');
       setTimeout(() => {
         document.getElementById('storeModal').classList.remove('show');
       }, 2000);
@@ -2477,7 +2536,7 @@
           
           const name = document.createElement('div');
           name.className = 'admin-player-name';
-          name.textContent = player.player_name + (player.is_admin ? ' ��' : '') + (player.alive ? ' ✅' : ' 💀');
+          name.textContent = player.player_name + (player.is_admin ? ' 👑' : '') + (player.alive ? ' ✅' : ' 💀');
           
           const stats = document.createElement('div');
           stats.className = 'admin-player-stats';
@@ -2605,7 +2664,7 @@
       const btn = document.getElementById('startBtn');
       const originalText = btn.textContent;
       btn.disabled = true;
-      btn.textContent = '�� CONECTANDO...';
+      btn.textContent = '⏳ CONECTANDO...';
       btn.style.opacity = '0.6';
       btn.style.cursor = 'wait';
       
@@ -2622,7 +2681,7 @@
           return;
         }
         
-        btn.textContent = authMode === 'register' ? '����� CRIANDO CONTA...' : '⏳ FAZENDO LOGIN...';
+        btn.textContent = authMode === 'register' ? '✨ CRIANDO CONTA...' : '⏳ FAZENDO LOGIN...';
         
         let success = false;
         
@@ -2731,5 +2790,5 @@
       }
     });
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a8fc62224acf41e',t:'MTc2NDg5ODE4MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a8fd220872ef41e',t:'MTc2NDg5ODY3Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>

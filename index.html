@@ -1308,7 +1308,7 @@
         if (snake.x === hearts[i].x && snake.y === hearts[i].y) {
           lives++;
           document.getElementById('currentLives').textContent = lives;
-          showKillMessage('❤️ +1 VIDA coletada!');
+          showKillMessage('❤����� +1 VIDA coletada!');
           hearts.splice(i, 1);
         }
       }
@@ -1388,7 +1388,7 @@
       if (lives <= 0) {
         endGame(false);
       } else {
-        showKillMessage(`💔 Perdeu 1 vida! Restam ${lives}`);
+        showKillMessage(`���� Perdeu 1 vida! Restam ${lives}`);
         snake = { x: 10, y: 10, dx: 1, dy: 0, body: [], length: 5 };
       }
     }
@@ -1555,5 +1555,5 @@
       }
     })();
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a94acdeb05c6497',t:'MTc2NDk0OTU3NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a94afa2f6446497',t:'MTc2NDk0OTY4OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>

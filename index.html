@@ -1060,7 +1060,7 @@
       💰 Sistema de Vidas Automático
      </div>
      <div style="font-size: 14px; color: #ccc;">
-      Ganhe 1 vida grátis a cada 1000 pontos!
+      Ganhe 1 vida gr����tis a cada 1000 pontos!
      </div>
     </div>
     <div style="text-align: center; color: #ccc; margin-top: 15px; font-size: 12px; padding: 10px; background: rgba(255, 255, 255, 0.05); border-radius: 8px;">
@@ -1464,13 +1464,42 @@
       }
       
       const playerId = generateId();
-      gameState.myPlayerId = playerId;
-      gameState.myPassword = hashPassword(password);
-      gameState.isAdmin = isAdmin;
-      
+      const passwordHash = hashPassword(password);
       const startX = Math.floor(Math.random() * (GAME_WIDTH / GRID_SIZE)) * GRID_SIZE;
       const startY = Math.floor(Math.random() * (GAME_HEIGHT / GRID_SIZE)) * GRID_SIZE;
       const playerColor = randomColor();
+      
+      const newPlayerData = {
+        player_id: playerId,
+        player_name: name,
+        password: passwordHash,
+        x: startX,
+        y: startY,
+        direction: 'right',
+        length: 3,
+        color: playerColor,
+        alive: true,
+        score: 0,
+        lives: 3,
+        total_score: 0,
+        is_admin: isAdmin,
+        last_update: Date.now()
+      };
+      
+      const result = await window.dataSdk.create(newPlayerData);
+      
+      if (result.isError) {
+        showError('Erro ao criar conta: ' + (result.error?.message || 'Erro desconhecido'));
+        return false;
+      }
+      
+      gameState.myPlayerId = playerId;
+      gameState.myPassword = passwordHash;
+      gameState.isAdmin = isAdmin;
+      gameState.kills = 0;
+      gameState.lives = 3;
+      gameState.totalScore = 0;
+      gameState.lastLifeScore = 0;
       
       gameState.myPlayer = {
         id: playerId,
@@ -1490,43 +1519,9 @@
         score: 0
       };
       
-      gameState.kills = 0;
-      gameState.lives = 3;
-      gameState.totalScore = 0;
-      gameState.lastLifeScore = 0;
-      
-      try {
-        const result = await window.dataSdk.create({
-          player_id: playerId,
-          player_name: name,
-          password: gameState.myPassword,
-          x: startX,
-          y: startY,
-          direction: 'right',
-          length: 3,
-          color: playerColor,
-          alive: true,
-          score: 0,
-          lives: 3,
-          total_score: 0,
-          is_admin: isAdmin,
-          last_update: Date.now()
-        });
-        
-        if (result.isError) {
-          console.error('Erro ao criar:', result.error);
-          showError('Erro ao criar jogador: ' + result.error.message);
-          return false;
-        }
-        
-        updateLivesDisplay();
-        showSuccess('Conta criada com sucesso!');
-        return true;
-      } catch (error) {
-        console.error('Exceção ao criar:', error);
-        showError('Erro ao criar jogador');
-        return false;
-      }
+      updateLivesDisplay();
+      showSuccess('Conta criada com sucesso!');
+      return true;
     }
 
     async function loginPlayer(name, password) {
@@ -1859,7 +1854,7 @@
       statsText.innerHTML = `
         <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px; margin-bottom: 20px;">
           <div style="font-size: 18px; color: #00ff88; margin: 8px 0;">⭐ Pontos Totais: ${gameState.totalScore}</div>
-          <div style="font-size: 18px; color: #ff6b6b; margin: 8px 0;">❤️ Vidas: ${gameState.lives}</div>
+          <div style="font-size: 18px; color: #ff6b6b; margin: 8px 0;">���️ Vidas: ${gameState.lives}</div>
           <div style="font-size: 18px; color: #ffd700; margin: 8px 0;">💀 Kills: ${gameState.kills}</div>
         </div>
       `;
@@ -2320,7 +2315,7 @@
         `Olá,\n\n` +
         `Gostaria de solicitar a compra do PACK 5 VIDAS EXTRAS no Snake Battle Royale.\n\n` +
         `Detalhes da Compra:\n` +
-        `- Produto: Pack 5 Vidas Extras ❤️❤️❤️❤️❤️\n` +
+        `- Produto: Pack 5 Vidas Extras ��️❤️❤️❤️❤️\n` +
         `- Valor: R$ 45,00\n` +
         `- Jogador: ${playerName}\n` +
         `- ID do Jogador: ${gameState.myPlayerId || 'N/A'}\n\n` +
@@ -2650,5 +2645,5 @@
       }
     });
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a8fa279902bf41e',t:'MTc2NDg5NjcyMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a8fa5918410f41e',t:'MTc2NDg5Njg0Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>

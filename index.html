@@ -11,13 +11,9 @@
       padding: 0;
       overflow: hidden;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      font-family: 'Arial Black', 'Arial Bold', sans-serif;
+      font-family: Arial, sans-serif;
     }
-
-    html {
-      height: 100%;
-    }
-
+    html { height: 100%; }
     #gameContainer {
       width: 100%;
       height: 100%;
@@ -26,7 +22,6 @@
       align-items: center;
       justify-content: center;
     }
-
     #gameCanvas {
       background: #1a1a2e;
       border: 5px solid #fff;
@@ -35,7 +30,6 @@
       max-width: 100%;
       max-height: 100%;
     }
-
     .hud {
       position: absolute;
       top: 20px;
@@ -44,38 +38,26 @@
       padding: 20px;
       border-radius: 15px;
       color: #fff;
-      min-width: 250px;
+      min-width: 200px;
       border: 3px solid #00ff88;
-      box-shadow: 0 0 30px rgba(0, 255, 136, 0.5);
     }
-
     .hud-title {
-      font-size: 24px;
+      font-size: 20px;
       color: #00ff88;
       margin-bottom: 15px;
       text-align: center;
-      text-shadow: 0 0 10px #00ff88;
     }
-
     .stat {
       display: flex;
       justify-content: space-between;
-      margin: 10px 0;
+      margin: 8px 0;
       font-size: 16px;
       padding: 8px;
       background: rgba(0, 255, 136, 0.1);
       border-radius: 8px;
     }
-
-    .stat-label {
-      color: #00ff88;
-    }
-
-    .stat-value {
-      color: #fff;
-      font-weight: bold;
-    }
-
+    .stat-label { color: #00ff88; }
+    .stat-value { color: #fff; font-weight: bold; }
     .leaderboard {
       position: absolute;
       top: 20px;
@@ -84,21 +66,17 @@
       padding: 20px;
       border-radius: 15px;
       color: #fff;
-      min-width: 280px;
+      min-width: 250px;
       max-height: 400px;
       overflow-y: auto;
       border: 3px solid #ff6b6b;
-      box-shadow: 0 0 30px rgba(255, 107, 107, 0.5);
     }
-
     .leaderboard-title {
-      font-size: 20px;
+      font-size: 18px;
       color: #ff6b6b;
       margin-bottom: 15px;
       text-align: center;
-      text-shadow: 0 0 10px #ff6b6b;
     }
-
     .leaderboard-item {
       display: flex;
       justify-content: space-between;
@@ -109,35 +87,14 @@
       border-radius: 8px;
       border-left: 4px solid #ff6b6b;
     }
-
     .leaderboard-item.you {
       background: rgba(0, 255, 136, 0.2);
       border-left-color: #00ff88;
     }
-
-    .rank {
-      font-size: 18px;
-      font-weight: bold;
-      color: #ffd700;
-      min-width: 30px;
-    }
-
-    .player-info {
-      flex: 1;
-      margin: 0 10px;
-    }
-
-    .player-name {
-      font-size: 14px;
-      color: #fff;
-    }
-
-    .player-score {
-      font-size: 16px;
-      font-weight: bold;
-      color: #00ff88;
-    }
-
+    .rank { font-size: 18px; font-weight: bold; color: #ffd700; min-width: 30px; }
+    .player-info { flex: 1; margin: 0 10px; }
+    .player-name { font-size: 14px; color: #fff; }
+    .player-score { font-size: 16px; font-weight: bold; color: #00ff88; }
     .controls {
       position: absolute;
       bottom: 20px;
@@ -147,48 +104,20 @@
       border-radius: 15px;
       color: #fff;
       border: 3px solid #4ecdc4;
-      box-shadow: 0 0 30px rgba(78, 205, 196, 0.5);
     }
-
-    .controls-title {
-      font-size: 16px;
-      color: #4ecdc4;
-      margin-bottom: 10px;
-      text-shadow: 0 0 10px #4ecdc4;
-    }
-
-    .control-item {
-      font-size: 13px;
-      margin: 5px 0;
-      color: #ccc;
-    }
-
+    .controls-title { font-size: 16px; color: #4ecdc4; margin-bottom: 10px; }
+    .control-item { font-size: 13px; margin: 5px 0; color: #ccc; }
     .touch-controls {
       position: fixed;
       bottom: 80px;
       right: 20px;
       display: none;
       z-index: 1000;
-      cursor: move;
-      touch-action: none;
     }
-
     @media (max-width: 768px) {
-      .touch-controls {
-        display: block;
-      }
+      .touch-controls { display: block; }
     }
-
-    .touch-controls.dragging {
-      opacity: 0.8;
-    }
-
-    .dpad {
-      position: relative;
-      width: 220px;
-      height: 220px;
-    }
-
+    .dpad { position: relative; width: 220px; height: 220px; }
     .arrow-btn {
       position: absolute;
       width: 70px;
@@ -204,48 +133,16 @@
       cursor: pointer;
       user-select: none;
       transition: all 0.1s;
-      box-shadow: 0 0 25px rgba(0, 255, 136, 0.6);
       touch-action: manipulation;
     }
-
     .arrow-btn:active {
       background: rgba(0, 255, 136, 1);
       transform: scale(0.92);
-      box-shadow: 0 0 35px rgba(0, 255, 136, 0.9);
     }
-
-    .arrow-up {
-      top: 0;
-      left: 75px;
-    }
-
-    .arrow-down {
-      bottom: 0;
-      left: 75px;
-    }
-
-    .arrow-left {
-      top: 75px;
-      left: 0;
-    }
-
-    .arrow-right {
-      top: 75px;
-      right: 0;
-    }
-
-    .arrow-center {
-      top: 75px;
-      left: 75px;
-      width: 70px;
-      height: 70px;
-      background: rgba(0, 0, 0, 0.6);
-      border-color: #4ecdc4;
-      pointer-events: auto;
-      font-size: 28px;
-      cursor: move;
-    }
-
+    .arrow-up { top: 0; left: 75px; }
+    .arrow-down { bottom: 0; left: 75px; }
+    .arrow-left { top: 75px; left: 0; }
+    .arrow-right { top: 75px; right: 0; }
     .game-over {
       position: absolute;
       top: 50%;
@@ -256,41 +153,13 @@
       border-radius: 20px;
       text-align: center;
       border: 5px solid #ff6b6b;
-      box-shadow: 0 0 60px rgba(255, 107, 107, 0.8);
       display: none;
       z-index: 1000;
     }
-
-    .game-over.show {
-      display: block;
-      animation: popIn 0.5s ease;
-    }
-
-    @keyframes popIn {
-      0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
-      100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-    }
-
-    .game-over-title {
-      font-size: 48px;
-      color: #ff6b6b;
-      margin-bottom: 20px;
-      text-shadow: 0 0 20px #ff6b6b;
-    }
-
-    .game-over-stats {
-      font-size: 24px;
-      color: #fff;
-      margin: 15px 0;
-    }
-
-    .game-over-rank {
-      font-size: 32px;
-      color: #ffd700;
-      margin: 20px 0;
-      text-shadow: 0 0 15px #ffd700;
-    }
-
+    .game-over.show { display: block; }
+    .game-over-title { font-size: 48px; color: #ff6b6b; margin-bottom: 20px; }
+    .game-over-stats { font-size: 24px; color: #fff; margin: 15px 0; }
+    .game-over-rank { font-size: 32px; color: #ffd700; margin: 20px 0; }
     .restart-btn {
       margin-top: 30px;
       padding: 15px 40px;
@@ -301,15 +170,8 @@
       border-radius: 10px;
       cursor: pointer;
       font-weight: bold;
-      box-shadow: 0 5px 20px rgba(0, 255, 136, 0.4);
-      transition: all 0.3s;
     }
-
-    .restart-btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 30px rgba(0, 255, 136, 0.6);
-    }
-
+    .restart-btn:hover { transform: translateY(-3px); }
     .name-input-overlay {
       position: absolute;
       top: 0;
@@ -322,32 +184,16 @@
       justify-content: center;
       z-index: 2000;
     }
-
     .name-input-box {
       background: linear-gradient(135deg, #667eea, #764ba2);
       padding: 50px;
       border-radius: 20px;
       text-align: center;
       border: 5px solid #fff;
-      box-shadow: 0 0 60px rgba(102, 126, 234, 0.8);
       max-width: 90%;
-      max-height: 90%;
-      overflow-y: auto;
     }
-
-    .name-input-title {
-      font-size: 36px;
-      color: #fff;
-      margin-bottom: 20px;
-      text-shadow: 0 0 20px #fff;
-    }
-
-    .name-input-subtitle {
-      font-size: 18px;
-      color: #ddd;
-      margin-bottom: 30px;
-    }
-
+    .name-input-title { font-size: 36px; color: #fff; margin-bottom: 20px; }
+    .name-input-subtitle { font-size: 18px; color: #ddd; margin-bottom: 30px; }
     .name-input {
       width: 300px;
       max-width: 100%;
@@ -361,12 +207,7 @@
       margin-bottom: 15px;
       outline: none;
     }
-
-    .name-input:focus {
-      border-color: #fff;
-      box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
-    }
-
+    .name-input:focus { border-color: #fff; }
     .start-btn {
       padding: 15px 50px;
       font-size: 24px;
@@ -376,15 +217,8 @@
       border-radius: 10px;
       cursor: pointer;
       font-weight: bold;
-      box-shadow: 0 5px 20px rgba(0, 255, 136, 0.4);
-      transition: all 0.3s;
     }
-
-    .start-btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 30px rgba(0, 255, 136, 0.6);
-    }
-
+    .start-btn:hover { transform: translateY(-3px); }
     .player-counter {
       position: absolute;
       bottom: 20px;
@@ -395,16 +229,8 @@
       color: #fff;
       font-size: 18px;
       border: 3px solid #ffd700;
-      box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
     }
-
-    .player-counter-value {
-      color: #ffd700;
-      font-weight: bold;
-      font-size: 24px;
-      text-shadow: 0 0 10px #ffd700;
-    }
-
+    .player-counter-value { color: #ffd700; font-weight: bold; font-size: 24px; }
     .kill-feed {
       position: absolute;
       top: 50%;
@@ -413,7 +239,6 @@
       pointer-events: none;
       z-index: 500;
     }
-
     .kill-message {
       background: rgba(255, 107, 107, 0.9);
       color: #fff;
@@ -423,370 +248,16 @@
       font-weight: bold;
       text-align: center;
       margin: 10px 0;
-      box-shadow: 0 0 30px rgba(255, 107, 107, 0.8);
       animation: killPop 2s ease forwards;
     }
-
     @keyframes killPop {
       0% { transform: scale(0); opacity: 0; }
       20% { transform: scale(1.2); opacity: 1; }
       80% { transform: scale(1); opacity: 1; }
       100% { transform: scale(0.8); opacity: 0; }
     }
-
-    .lives-display {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      margin-top: 5px;
-    }
-
-    .heart {
-      color: #ff6b6b;
-      font-size: 18px;
-      text-shadow: 0 0 10px #ff6b6b;
-    }
-
-    .store-btn {
-      margin-top: 15px;
-      padding: 10px 30px;
-      font-size: 18px;
-      background: linear-gradient(135deg, #ffd700, #ffed4e);
-      color: #000;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      font-weight: bold;
-      box-shadow: 0 5px 20px rgba(255, 215, 0, 0.4);
-      transition: all 0.3s;
-      display: block;
-      width: 100%;
-    }
-
-    .store-btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 30px rgba(255, 215, 0, 0.6);
-    }
-
-    .admin-btn {
-      margin-top: 10px;
-      padding: 8px 20px;
-      font-size: 14px;
-      background: linear-gradient(135deg, #a29bfe, #6c5ce7);
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: bold;
-      transition: all 0.3s;
-    }
-
-    .admin-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 5px 20px rgba(162, 155, 254, 0.5);
-    }
-
-    .admin-panel {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: rgba(0, 0, 0, 0.98);
-      padding: 40px;
-      border-radius: 20px;
-      border: 5px solid #a29bfe;
-      box-shadow: 0 0 60px rgba(162, 155, 254, 0.8);
-      display: none;
-      z-index: 3000;
-      max-width: 600px;
-      width: 90%;
-      max-height: 80%;
-      overflow-y: auto;
-    }
-
-    .admin-panel.show {
-      display: block;
-      animation: popIn 0.5s ease;
-    }
-
-    .admin-title {
-      font-size: 32px;
-      color: #a29bfe;
-      margin-bottom: 20px;
-      text-align: center;
-      text-shadow: 0 0 20px #a29bfe;
-    }
-
-    .admin-section {
-      margin: 20px 0;
-      padding: 15px;
-      background: rgba(162, 155, 254, 0.1);
-      border-radius: 10px;
-      border: 2px solid rgba(162, 155, 254, 0.3);
-    }
-
-    .admin-section-title {
-      font-size: 18px;
-      color: #a29bfe;
-      margin-bottom: 15px;
-      font-weight: bold;
-    }
-
-    .admin-player-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px;
-      margin: 8px 0;
-      background: rgba(0, 0, 0, 0.5);
-      border-radius: 8px;
-      color: #fff;
-      gap: 10px;
-    }
-
-    .admin-player-info {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .admin-player-name {
-      font-weight: bold;
-      color: #00ff88;
-      margin-bottom: 5px;
-      word-break: break-word;
-    }
-
-    .admin-player-stats {
-      font-size: 12px;
-      color: #ccc;
-    }
-
-    .admin-actions {
-      display: flex;
-      gap: 5px;
-      flex-shrink: 0;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-    }
-
-    .admin-action-btn {
-      padding: 6px 12px;
-      font-size: 12px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: bold;
-      transition: all 0.2s;
-      white-space: nowrap;
-    }
-
-    .add-life-btn {
-      background: #00ff88;
-      color: #000;
-    }
-
-    .add-life-btn:hover {
-      background: #00cc6a;
-      transform: scale(1.05);
-    }
-
-    .remove-life-btn {
-      background: #ffd700;
-      color: #000;
-    }
-
-    .remove-life-btn:hover {
-      background: #ffed4e;
-      transform: scale(1.05);
-    }
-
-    .kick-btn {
-      background: #ff6b6b;
-      color: #fff;
-    }
-
-    .kick-btn:hover {
-      background: #ff5252;
-      transform: scale(1.05);
-    }
-
-    .close-admin-btn {
-      margin-top: 20px;
-      padding: 12px 30px;
-      font-size: 16px;
-      background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
-      color: #fff;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      font-weight: bold;
-      width: 100%;
-    }
-
-    .close-admin-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 5px 20px rgba(255, 107, 107, 0.5);
-    }
-
-    .store-modal {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: rgba(0, 0, 0, 0.98);
-      padding: 40px;
-      border-radius: 20px;
-      border: 5px solid #ffd700;
-      box-shadow: 0 0 60px rgba(255, 215, 0, 0.8);
-      display: none;
-      z-index: 3000;
-      min-width: 400px;
-      max-width: 90%;
-      max-height: 80%;
-      overflow-y: auto;
-    }
-
-    .store-modal.show {
-      display: block;
-      animation: popIn 0.5s ease;
-    }
-
-    .store-title {
-      font-size: 36px;
-      color: #ffd700;
-      margin-bottom: 20px;
-      text-align: center;
-      text-shadow: 0 0 20px #ffd700;
-    }
-
-    .store-item {
-      background: rgba(255, 215, 0, 0.1);
-      padding: 20px;
-      margin: 15px 0;
-      border-radius: 15px;
-      border: 3px solid rgba(255, 215, 0, 0.5);
-      text-align: center;
-    }
-
-    .store-item-title {
-      font-size: 24px;
-      color: #fff;
-      margin-bottom: 10px;
-    }
-
-    .store-item-desc {
-      font-size: 16px;
-      color: #ccc;
-      margin-bottom: 15px;
-    }
-
-    .store-item-price {
-      font-size: 28px;
-      color: #ffd700;
-      font-weight: bold;
-      margin-bottom: 15px;
-      text-shadow: 0 0 15px #ffd700;
-    }
-
-    .buy-btn {
-      padding: 12px 40px;
-      font-size: 18px;
-      background: linear-gradient(135deg, #00ff88, #00cc6a);
-      color: #000;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      font-weight: bold;
-      transition: all 0.3s;
-    }
-
-    .buy-btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 30px rgba(0, 255, 136, 0.6);
-    }
-
-    .buy-btn:disabled {
-      background: #666;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    .close-store-btn {
-      margin-top: 20px;
-      padding: 12px 30px;
-      font-size: 16px;
-      background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
-      color: #fff;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      font-weight: bold;
-      width: 100%;
-    }
-
-    .close-store-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 5px 20px rgba(255, 107, 107, 0.5);
-    }
-
-    .next-life-info {
-      font-size: 14px;
-      color: #00ff88;
-      text-align: center;
-      margin-top: 10px;
-      padding: 8px;
-      background: rgba(0, 255, 136, 0.1);
-      border-radius: 8px;
-    }
-
-    .login-mode-btn {
-      margin-top: 15px;
-      padding: 8px 20px;
-      font-size: 14px;
-      background: rgba(255, 255, 255, 0.1);
-      color: #fff;
-      border: 2px solid #fff;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: bold;
-      transition: all 0.3s;
-    }
-
-    .login-mode-btn:hover {
-      background: rgba(255, 255, 255, 0.2);
-    }
-
-    .error-message {
-      background: rgba(255, 107, 107, 0.2);
-      color: #ff6b6b;
-      padding: 12px;
-      border-radius: 8px;
-      margin-top: 15px;
-      font-size: 14px;
-      border: 2px solid #ff6b6b;
-      display: none;
-    }
-
-    .success-message {
-      background: rgba(0, 255, 136, 0.2);
-      color: #00ff88;
-      padding: 12px;
-      border-radius: 8px;
-      margin-top: 15px;
-      font-size: 14px;
-      border: 2px solid #00ff88;
-      display: none;
-    }
-
-    .input-label {
-      display: block;
-      text-align: left;
-      color: #ddd;
-      font-size: 14px;
-      margin-bottom: 5px;
-      margin-top: 10px;
-    }
-
+    .lives-display { display: flex; align-items: center; gap: 5px; margin-top: 5px; }
+    .heart { color: #ff6b6b; font-size: 18px; }
     .logout-btn {
       position: absolute;
       bottom: 20px;
@@ -801,84 +272,175 @@
       cursor: pointer;
       font-weight: bold;
       border: 3px solid #fff;
-      box-shadow: 0 0 30px rgba(255, 107, 107, 0.5);
-      transition: all 0.3s;
       z-index: 100;
     }
-
-    .logout-btn:hover {
-      transform: translateX(-50%) translateY(-3px);
-      box-shadow: 0 8px 40px rgba(255, 107, 107, 0.7);
+    .logout-btn:hover { transform: translateX(-50%) translateY(-3px); }
+    .login-mode-btn {
+      margin-top: 15px;
+      padding: 8px 20px;
+      font-size: 14px;
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      border: 2px solid #fff;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
     }
-
+    .login-mode-btn:hover { background: rgba(255, 255, 255, 0.2); }
+    .error-message {
+      background: rgba(255, 107, 107, 0.2);
+      color: #ff6b6b;
+      padding: 12px;
+      border-radius: 8px;
+      margin-top: 15px;
+      font-size: 14px;
+      border: 2px solid #ff6b6b;
+      display: none;
+    }
+    .success-message {
+      background: rgba(0, 255, 136, 0.2);
+      color: #00ff88;
+      padding: 12px;
+      border-radius: 8px;
+      margin-top: 15px;
+      font-size: 14px;
+      border: 2px solid #00ff88;
+      display: none;
+    }
+    .input-label {
+      display: block;
+      text-align: left;
+      color: #ddd;
+      font-size: 14px;
+      margin-bottom: 5px;
+      margin-top: 10px;
+    }
+    .store-modal {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0, 0, 0, 0.98);
+      padding: 40px;
+      border-radius: 20px;
+      border: 5px solid #ffd700;
+      display: none;
+      z-index: 3000;
+      min-width: 400px;
+      max-width: 90%;
+      max-height: 80%;
+      overflow-y: auto;
+    }
+    .store-modal.show { display: block; }
+    .store-title { font-size: 36px; color: #ffd700; margin-bottom: 20px; text-align: center; }
+    .store-item {
+      background: rgba(255, 215, 0, 0.1);
+      padding: 20px;
+      margin: 15px 0;
+      border-radius: 15px;
+      border: 3px solid rgba(255, 215, 0, 0.5);
+      text-align: center;
+    }
+    .store-item-title { font-size: 24px; color: #fff; margin-bottom: 10px; }
+    .store-item-desc { font-size: 16px; color: #ccc; margin-bottom: 15px; }
+    .store-item-price { font-size: 28px; color: #ffd700; font-weight: bold; margin-bottom: 15px; }
+    .buy-btn {
+      padding: 12px 40px;
+      font-size: 18px;
+      background: linear-gradient(135deg, #00ff88, #00cc6a);
+      color: #000;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .buy-btn:hover { transform: translateY(-3px); }
+    .close-store-btn {
+      margin-top: 20px;
+      padding: 12px 30px;
+      font-size: 16px;
+      background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      width: 100%;
+    }
+    .admin-panel {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0, 0, 0, 0.98);
+      padding: 40px;
+      border-radius: 20px;
+      border: 5px solid #a29bfe;
+      display: none;
+      z-index: 3000;
+      max-width: 600px;
+      width: 90%;
+      max-height: 80%;
+      overflow-y: auto;
+    }
+    .admin-panel.show { display: block; }
+    .admin-title { font-size: 32px; color: #a29bfe; margin-bottom: 20px; text-align: center; }
+    .admin-section {
+      margin: 20px 0;
+      padding: 15px;
+      background: rgba(162, 155, 254, 0.1);
+      border-radius: 10px;
+      border: 2px solid rgba(162, 155, 254, 0.3);
+    }
+    .admin-section-title { font-size: 18px; color: #a29bfe; margin-bottom: 15px; font-weight: bold; }
+    .admin-player-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      margin: 8px 0;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 8px;
+      color: #fff;
+      gap: 10px;
+    }
+    .admin-player-info { flex: 1; min-width: 0; }
+    .admin-player-name { font-weight: bold; color: #00ff88; margin-bottom: 5px; word-break: break-word; }
+    .admin-player-stats { font-size: 12px; color: #ccc; }
+    .admin-actions { display: flex; gap: 5px; flex-shrink: 0; flex-wrap: wrap; justify-content: flex-end; }
+    .admin-action-btn {
+      padding: 6px 12px;
+      font-size: 12px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+    .add-life-btn { background: #00ff88; color: #000; }
+    .add-life-btn:hover { background: #00cc6a; transform: scale(1.05); }
+    .remove-life-btn { background: #ffd700; color: #000; }
+    .remove-life-btn:hover { background: #ffed4e; transform: scale(1.05); }
+    .kick-btn { background: #ff6b6b; color: #fff; }
+    .kick-btn:hover { background: #ff5252; transform: scale(1.05); }
+    .close-admin-btn {
+      margin-top: 20px;
+      padding: 12px 30px;
+      font-size: 16px;
+      background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      width: 100%;
+    }
     .no-players-message {
       text-align: center;
       color: #ccc;
       padding: 20px;
       font-size: 14px;
       font-style: italic;
-    }
-
-    .bot-warning {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: rgba(255, 0, 0, 0.95);
-      color: #fff;
-      padding: 30px 50px;
-      border-radius: 20px;
-      font-size: 32px;
-      font-weight: bold;
-      text-align: center;
-      border: 5px solid #fff;
-      box-shadow: 0 0 60px rgba(255, 0, 0, 0.9);
-      z-index: 2000;
-      animation: pulse 1s infinite;
-      display: none;
-    }
-
-    .bot-warning.show {
-      display: block;
-    }
-
-    @keyframes pulse {
-      0%, 100% { transform: translate(-50%, -50%) scale(1); }
-      50% { transform: translate(-50%, -50%) scale(1.05); }
-    }
-
-    .bot-timer {
-      position: absolute;
-      top: 50%;
-      right: 20px;
-      transform: translateY(-50%);
-      background: rgba(255, 0, 0, 0.95);
-      padding: 20px;
-      border-radius: 15px;
-      border: 3px solid #fff;
-      box-shadow: 0 0 30px rgba(255, 0, 0, 0.8);
-      display: none;
-      z-index: 1000;
-    }
-
-    .bot-timer.show {
-      display: block;
-    }
-
-    .bot-timer-title {
-      font-size: 18px;
-      color: #fff;
-      margin-bottom: 10px;
-      text-align: center;
-      font-weight: bold;
-    }
-
-    .bot-timer-value {
-      font-size: 36px;
-      color: #fff;
-      text-align: center;
-      font-weight: bold;
-      text-shadow: 0 0 20px #fff;
     }
   </style>
   <style>@view-transition { navigation: auto; }</style>
@@ -897,7 +459,7 @@
       Crie sua conta ou faça login!
      </div><label class="input-label" for="nameInput">Nome do Jogador</label> <input type="text" id="nameInput" class="name-input" placeholder="Seu nome" maxlength="15"> <label class="input-label" for="passwordInput">Senha</label> <input type="password" id="passwordInput" class="name-input" placeholder="Sua senha">
      <div class="error-message" id="authError"></div>
-     <div class="success-message" id="authSuccess"></div><br><button class="start-btn" id="startBtn">CRIAR CONTA E JOGAR</button> <button class="login-mode-btn" id="loginModeBtn">JÁ TENHO CONTA - FAZER LOGIN</button> <button class="store-btn" id="storeBtn">🛒 LOJA DE VIDAS</button> <button class="admin-btn" id="adminBtn">👑 ADMIN</button>
+     <div class="success-message" id="authSuccess"></div><br><button class="start-btn" id="startBtn">CRIAR CONTA E JOGAR</button> <button class="login-mode-btn" id="loginModeBtn">JÁ TENHO CONTA - FAZER LOGIN</button> <button class="login-mode-btn" id="storeBtn" style="background: linear-gradient(135deg, #ffd700, #ffed4e); color: #000; margin-top: 10px;">🛒 LOJA DE VIDAS</button> <button class="login-mode-btn" id="adminBtn" style="background: linear-gradient(135deg, #a29bfe, #6c5ce7); margin-top: 5px;">👑 ADMIN</button>
     </div>
    </div>
    <canvas id="gameCanvas" width="360" height="640"></canvas>
@@ -905,20 +467,23 @@
     <div class="hud-title">
      ⚔️ SEU STATUS
     </div>
-    <div class="stat"><span class="stat-label">🐍 Tamanho:</span> <span class="stat-value" id="length">3</span>
+    <div class="stat">
+     <span class="stat-label">🐍 Tamanho:</span><span class="stat-value" id="length">3</span>
     </div>
-    <div class="stat"><span class="stat-label">💀 Kills:</span> <span class="stat-value" id="kills">0</span>
+    <div class="stat">
+     <span class="stat-label">💀 Kills:</span><span class="stat-value" id="kills">0</span>
     </div>
-    <div class="stat"><span class="stat-label">⭐ Pontos:</span> <span class="stat-value" id="score">0</span>
+    <div class="stat">
+     <span class="stat-label">⭐ Pontos:</span><span class="stat-value" id="score">0</span>
     </div>
-    <div class="stat"><span class="stat-label">🏆 Rank:</span> <span class="stat-value" id="rank">#-</span>
+    <div class="stat">
+     <span class="stat-label">🏆 Rank:</span><span class="stat-value" id="rank">#-</span>
     </div>
-    <div class="stat"><span class="stat-label">❤️ Vidas:</span>
-     <div class="lives-display" id="livesDisplay"><span class="heart">❤️</span> <span class="heart">❤️</span> <span class="heart">❤️</span>
+    <div class="stat">
+     <span class="stat-label">❤️ Vidas:</span>
+     <div class="lives-display" id="livesDisplay">
+      <span class="heart">❤️</span><span class="heart">❤️</span><span class="heart">❤️</span>
      </div>
-    </div>
-    <div class="next-life-info" id="nextLifeInfo">
-     Próxima vida em: 1000 pts
     </div>
    </div>
    <div class="leaderboard">
@@ -958,23 +523,9 @@
      <div class="arrow-btn arrow-right" id="arrowRight">
       ➡️
      </div>
-     <div class="arrow-btn arrow-center">
-      🎮
-     </div>
     </div>
    </div>
    <div class="kill-feed" id="killFeed"></div>
-   <div class="bot-warning" id="botWarning">
-    ⚠️ BOT MATADOR ATIVO ⚠️
-   </div>
-   <div class="bot-timer" id="botTimer">
-    <div class="bot-timer-title">
-     💀 BOT ATIVO
-    </div>
-    <div class="bot-timer-value" id="botTimerValue">
-     2:00
-    </div>
-   </div>
    <div class="game-over" id="gameOver">
     <div class="game-over-title">
      💀 VOCÊ MORREU!
@@ -1028,17 +579,6 @@
       📧 Enviar email para <strong style="color: #ffd700;">juridicofpolis@gmail.com</strong><br>
        com nome do personagem solicitando este pack
      </div>
-    </div>
-    <div style="text-align: center; color: #ffd700; margin-top: 20px; padding: 15px; background: rgba(255, 215, 0, 0.1); border-radius: 10px;">
-     <div style="font-size: 18px; margin-bottom: 8px;">
-      💰 Sistema de Vidas Automático
-     </div>
-     <div style="font-size: 14px; color: #ccc;">
-      Ganhe 1 vida grátis a cada 1000 pontos!
-     </div>
-    </div>
-    <div style="text-align: center; color: #ccc; margin-top: 15px; font-size: 12px; padding: 10px; background: rgba(255, 255, 255, 0.05); border-radius: 8px;">
-     ℹ️ Ao clicar em solicitar, um email será enviado para processamento do pagamento
     </div><button class="close-store-btn" id="closeStoreBtn">FECHAR LOJA</button>
    </div>
    <div class="admin-panel" id="adminPanel">
@@ -1069,48 +609,36 @@
   <script>
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
-    
-    // Config
     const GRID_SIZE = 10;
     const GAME_WIDTH = canvas.width;
     const GAME_HEIGHT = canvas.height;
     const UPDATE_INTERVAL = 100;
     const FOOD_COUNT = 30;
-    const KILLER_BOT_INTERVAL = 3 * 60 * 60 * 1000;
-    const KILLER_BOT_DURATION = 2 * 60 * 1000;
-    
     let authMode = 'register';
-    let adminUpdateInterval = null;
     
-    // LocalStorage Helper Functions
     function getAllPlayers() {
       const players = localStorage.getItem('snake_players');
       return players ? JSON.parse(players) : [];
     }
-    
     function saveAllPlayers(players) {
       localStorage.setItem('snake_players', JSON.stringify(players));
     }
-    
     function getPlayerByName(name) {
       const players = getAllPlayers();
       return players.find(p => p.player_name.toLowerCase() === name.toLowerCase());
     }
-    
-    function createPlayer(name, password, isAdmin = false) {
+    function createPlayer(name, password) {
       const existing = getPlayerByName(name);
       if (existing) {
         showError('Este nome já está em uso! Escolha outro nome.');
         return null;
       }
-      
       const players = getAllPlayers();
       const playerId = generateId();
       const passwordHash = hashPassword(password);
       const startX = Math.floor(Math.random() * (GAME_WIDTH / GRID_SIZE)) * GRID_SIZE;
       const startY = Math.floor(Math.random() * (GAME_HEIGHT / GRID_SIZE)) * GRID_SIZE;
       const playerColor = randomColor();
-      
       const newPlayer = {
         player_id: playerId,
         player_name: name,
@@ -1124,16 +652,12 @@
         score: 0,
         lives: 3,
         total_score: 0,
-        is_admin: isAdmin,
         last_update: Date.now()
       };
-      
       players.push(newPlayer);
       saveAllPlayers(players);
-      
       return newPlayer;
     }
-    
     function updatePlayer(playerId, updates) {
       const players = getAllPlayers();
       const index = players.findIndex(p => p.player_id === playerId);
@@ -1144,7 +668,6 @@
       }
       return null;
     }
-    
     function deletePlayer(playerId) {
       const players = getAllPlayers();
       const filtered = players.filter(p => p.player_id !== playerId);
@@ -1157,22 +680,15 @@
       myPassword: null,
       players: [],
       foods: [],
-      lifePowerUps: [],
       running: false,
       kills: 0,
       lives: 3,
-      totalScore: 0,
-      lastLifeScore: 0,
-      isAdmin: false,
-      killerBot: null,
-      killerBotActive: false,
-      botLifesDropped: false
+      totalScore: 0
     };
 
     function generateId() {
       return Date.now().toString(36) + Math.random().toString(36).substr(2);
     }
-
     function hashPassword(password) {
       let hash = 0;
       for (let i = 0; i < password.length; i++) {
@@ -1182,256 +698,24 @@
       }
       return hash.toString(36);
     }
-
-    const COLORS = [
-      '#ff6b6b', '#4ecdc4', '#45b7d1', '#ffd93d', '#6bcf7f',
-      '#a29bfe', '#fd79a8', '#fdcb6e', '#00b894', '#e17055'
-    ];
-
+    const COLORS = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#ffd93d', '#6bcf7f', '#a29bfe', '#fd79a8', '#fdcb6e', '#00b894', '#e17055'];
     function randomColor() {
       return COLORS[Math.floor(Math.random() * COLORS.length)];
     }
-
     function createFood() {
       return {
         x: Math.floor(Math.random() * (GAME_WIDTH / GRID_SIZE)) * GRID_SIZE,
         y: Math.floor(Math.random() * (GAME_HEIGHT / GRID_SIZE)) * GRID_SIZE
       };
     }
-
     for (let i = 0; i < FOOD_COUNT; i++) {
       gameState.foods.push(createFood());
     }
-
-    function createKillerBot() {
-      const startX = Math.floor(Math.random() * (GAME_WIDTH / GRID_SIZE)) * GRID_SIZE;
-      const startY = Math.floor(Math.random() * (GAME_HEIGHT / GRID_SIZE)) * GRID_SIZE;
-      
-      return {
-        id: 'killer-bot-' + Date.now(),
-        name: '💀 BOT MATADOR 💀',
-        x: startX,
-        y: startY,
-        direction: 'right',
-        nextDirection: 'right',
-        segments: [
-          {x: startX, y: startY},
-          {x: startX - GRID_SIZE, y: startY},
-          {x: startX - GRID_SIZE * 2, y: startY}
-        ],
-        length: 50,
-        color: '#000000',
-        alive: true,
-        score: 9999,
-        isBot: true
-      };
-    }
-
-    function activateKillerBot() {
-      if (gameState.killerBotActive) return;
-      
-      gameState.killerBot = createKillerBot();
-      gameState.killerBotActive = true;
-      gameState.botLifesDropped = false;
-      
-      showKillMessage('⚠️ ALERTA: BOT MATADOR EM 30 SEGUNDOS!');
-      
-      setTimeout(() => {
-        if (gameState.killerBotActive) {
-          showKillMessage('⚠️ 10 SEGUNDOS PARA O BOT!');
-        }
-      }, 20000);
-      
-      setTimeout(() => {
-        if (gameState.killerBotActive) {
-          showKillMessage('💀 BOT MATADOR ATIVADO! CUIDADO!');
-          document.getElementById('botWarning').classList.add('show');
-          document.getElementById('botTimer').classList.add('show');
-          
-          setTimeout(() => {
-            document.getElementById('botWarning').classList.remove('show');
-          }, 5000);
-          
-          let timeLeft = KILLER_BOT_DURATION / 1000;
-          const timerInterval = setInterval(() => {
-            if (!gameState.killerBotActive) {
-              clearInterval(timerInterval);
-              return;
-            }
-            
-            timeLeft--;
-            const minutes = Math.floor(timeLeft / 60);
-            const seconds = timeLeft % 60;
-            document.getElementById('botTimerValue').textContent = 
-              `${minutes}:${seconds.toString().padStart(2, '0')}`;
-            
-            if (timeLeft <= 0) {
-              clearInterval(timerInterval);
-            }
-          }, 1000);
-        }
-      }, 30000);
-      
-      setTimeout(() => {
-        deactivateKillerBot();
-      }, KILLER_BOT_DURATION);
-    }
-
-    function deactivateKillerBot(wasKilled = false) {
-      if (!gameState.killerBotActive) return;
-      
-      if (wasKilled && !gameState.botLifesDropped) {
-        const botX = gameState.killerBot ? gameState.killerBot.x : GAME_WIDTH / 2;
-        const botY = gameState.killerBot ? gameState.killerBot.y : GAME_HEIGHT / 2;
-        
-        for (let i = 0; i < 30; i++) {
-          const angle = (i / 30) * Math.PI * 2;
-          const radius = 100 + Math.random() * 100;
-          let lifeX = Math.round((botX + Math.cos(angle) * radius) / GRID_SIZE) * GRID_SIZE;
-          let lifeY = Math.round((botY + Math.sin(angle) * radius) / GRID_SIZE) * GRID_SIZE;
-          
-          lifeX = Math.max(0, Math.min(GAME_WIDTH - GRID_SIZE, lifeX));
-          lifeY = Math.max(0, Math.min(GAME_HEIGHT - GRID_SIZE, lifeY));
-          
-          gameState.lifePowerUps.push({
-            x: lifeX,
-            y: lifeY,
-            createdAt: Date.now()
-          });
-        }
-        
-        gameState.botLifesDropped = true;
-        showKillMessage('💎 BOT DERROTADO! 30 VIDAS ESPALHADAS! 💎');
-      } else if (!wasKilled) {
-        showKillMessage('⏰ TEMPO DO BOT ACABOU! ELE FUGIU! 💨');
-      }
-      
-      gameState.killerBot = null;
-      gameState.killerBotActive = false;
-      document.getElementById('botTimer').classList.remove('show');
-      document.getElementById('botWarning').classList.remove('show');
-    }
-
-    function updateKillerBot() {
-      if (!gameState.killerBot || !gameState.killerBotActive) return;
-      
-      const bot = gameState.killerBot;
-      
-      let closestPlayer = gameState.myPlayer && gameState.myPlayer.alive ? gameState.myPlayer : null;
-      let minDist = closestPlayer ? 
-        Math.abs(bot.x - closestPlayer.x) + Math.abs(bot.y - closestPlayer.y) : 
-        Infinity;
-      
-      for (const player of gameState.players) {
-        if (!player.alive) continue;
-        const dist = Math.abs(bot.x - player.x) + Math.abs(bot.y - player.y);
-        if (dist < minDist) {
-          minDist = dist;
-          closestPlayer = player;
-        }
-      }
-      
-      if (closestPlayer) {
-        const dx = closestPlayer.x - bot.x;
-        const dy = closestPlayer.y - bot.y;
-        
-        if (Math.abs(dx) > Math.abs(dy)) {
-          if (dx > 0 && bot.direction !== 'left') {
-            bot.nextDirection = 'right';
-          } else if (dx < 0 && bot.direction !== 'right') {
-            bot.nextDirection = 'left';
-          }
-        } else {
-          if (dy > 0 && bot.direction !== 'up') {
-            bot.nextDirection = 'down';
-          } else if (dy < 0 && bot.direction !== 'down') {
-            bot.nextDirection = 'up';
-          }
-        }
-      }
-      
-      bot.direction = bot.nextDirection;
-      
-      let newX = bot.x;
-      let newY = bot.y;
-      
-      if (bot.direction === 'up') newY -= GRID_SIZE;
-      if (bot.direction === 'down') newY += GRID_SIZE;
-      if (bot.direction === 'left') newX -= GRID_SIZE;
-      if (bot.direction === 'right') newX += GRID_SIZE;
-      
-      if (newX < 0) newX = GAME_WIDTH - GRID_SIZE;
-      if (newX >= GAME_WIDTH) newX = 0;
-      if (newY < 0) newY = GAME_HEIGHT - GRID_SIZE;
-      if (newY >= GAME_HEIGHT) newY = 0;
-      
-      bot.x = newX;
-      bot.y = newY;
-      bot.segments.unshift({x: newX, y: newY});
-      
-      for (let i = gameState.foods.length - 1; i >= 0; i--) {
-        const food = gameState.foods[i];
-        if (food.x === newX && food.y === newY) {
-          bot.length += 2;
-          gameState.foods.splice(i, 1);
-          gameState.foods.push(createFood());
-          break;
-        }
-      }
-      
-      while (bot.segments.length > bot.length) {
-        bot.segments.pop();
-      }
-      
-      if (gameState.myPlayer && gameState.myPlayer.alive) {
-        const myHead = {x: gameState.myPlayer.x, y: gameState.myPlayer.y};
-        
-        if (gameState.myPlayer.length > bot.length) {
-          if (myHead.x === bot.x && myHead.y === bot.y) {
-            showKillMessage('🏆 VOCÊ DERROTOU O BOT MATADOR! 🏆');
-            gameState.myPlayer.score += 1000;
-            gameState.totalScore += 1000;
-            gameState.myPlayer.length += Math.floor(bot.length / 2);
-            deactivateKillerBot(true);
-            checkLifeBonus();
-            updateLivesDisplay();
-            return;
-          }
-        }
-        
-        const hitByBot = bot.segments.some(seg => seg.x === myHead.x && seg.y === myHead.y);
-        
-        if (hitByBot) {
-          gameOver('💀 VOCÊ FOI ELIMINADO PELO BOT MATADOR!');
-          return;
-        }
-        
-        for (const seg of gameState.myPlayer.segments) {
-          if (bot.segments.some(botSeg => botSeg.x === seg.x && botSeg.y === seg.y)) {
-            gameOver('💀 VOCÊ FOI ELIMINADO PELO BOT MATADOR!');
-            return;
-          }
-        }
-      }
-    }
-
-    setInterval(() => {
-      if (gameState.running) {
-        activateKillerBot();
-      }
-    }, KILLER_BOT_INTERVAL);
-    
-    setTimeout(() => {
-      if (gameState.running) {
-        activateKillerBot();
-      }
-    }, 10000);
 
     function loadOtherPlayers() {
       const allPlayers = getAllPlayers();
       const now = Date.now();
       const PLAYER_INACTIVE_TIME = 10000;
-      
       gameState.players = allPlayers
         .filter(p => p.player_id !== gameState.myPlayerId && (now - p.last_update < PLAYER_INACTIVE_TIME))
         .map(p => ({
@@ -1446,9 +730,7 @@
           score: p.score,
           segments: generateSegments(p.x, p.y, p.direction, p.length)
         }));
-      
       updateLeaderboard(allPlayers.filter(p => now - p.last_update < PLAYER_INACTIVE_TIME));
-      
       const alivePlayers = allPlayers.filter(p => p.alive && (now - p.last_update < PLAYER_INACTIVE_TIME)).length;
       document.getElementById('playersAlive').textContent = alivePlayers;
     }
@@ -1457,55 +739,33 @@
       const segments = [{x: headX, y: headY}];
       let x = headX;
       let y = headY;
-      
       const oppositeDir = {
         'up': {dx: 0, dy: GRID_SIZE},
         'down': {dx: 0, dy: -GRID_SIZE},
         'left': {dx: GRID_SIZE, dy: 0},
         'right': {dx: -GRID_SIZE, dy: 0}
       }[direction];
-      
       for (let i = 1; i < length; i++) {
         x += oppositeDir.dx;
         y += oppositeDir.dy;
         segments.push({x, y});
       }
-      
       return segments;
     }
 
     function updateLivesDisplay() {
       const livesDisplay = document.getElementById('livesDisplay');
       livesDisplay.innerHTML = '';
-      
       for (let i = 0; i < gameState.lives; i++) {
         const heart = document.createElement('span');
         heart.className = 'heart';
         heart.textContent = '❤️';
         livesDisplay.appendChild(heart);
       }
-      
-      const nextLifePoints = 1000 - (gameState.totalScore - gameState.lastLifeScore);
-      if (nextLifePoints > 0) {
-        document.getElementById('nextLifeInfo').textContent = `Próxima vida em: ${nextLifePoints} pts`;
-      } else {
-        document.getElementById('nextLifeInfo').textContent = `Próxima vida em: ${1000 - ((gameState.totalScore - gameState.lastLifeScore) % 1000)} pts`;
-      }
-    }
-
-    function checkLifeBonus() {
-      const pointsSinceLastLife = gameState.totalScore - gameState.lastLifeScore;
-      if (pointsSinceLastLife >= 1000) {
-        gameState.lives++;
-        gameState.lastLifeScore += 1000;
-        updateLivesDisplay();
-        showKillMessage('❤️ +1 VIDA EXTRA! (1000 pts)');
-      }
     }
 
     function updatePlayerOnServer() {
       if (!gameState.myPlayer || !gameState.myPlayer.alive) return;
-      
       updatePlayer(gameState.myPlayerId, {
         x: gameState.myPlayer.x,
         y: gameState.myPlayer.y,
@@ -1521,9 +781,7 @@
 
     function markPlayerDead() {
       if (!gameState.myPlayer) return;
-      
       gameState.myPlayer.alive = false;
-      
       updatePlayer(gameState.myPlayerId, {
         alive: false,
         lives: gameState.lives,
@@ -1533,17 +791,13 @@
 
     function logoutPlayer() {
       if (!gameState.myPlayer) return;
-      
       gameState.running = false;
-      
       updatePlayer(gameState.myPlayerId, {
         alive: false,
         lives: gameState.lives,
         total_score: gameState.totalScore
       });
-      
       showKillMessage('✅ Progresso salvo com sucesso!');
-      
       setTimeout(() => {
         document.getElementById('nameInputOverlay').style.display = 'flex';
         document.getElementById('nameInput').value = '';
@@ -1555,264 +809,88 @@
 
     document.addEventListener('keydown', (e) => {
       if (!gameState.running || !gameState.myPlayer || !gameState.myPlayer.alive) return;
-      
       const key = e.key;
       const player = gameState.myPlayer;
-      
-      if (key === 'ArrowUp' && player.direction !== 'down') {
-        player.nextDirection = 'up';
-      } else if (key === 'ArrowDown' && player.direction !== 'up') {
-        player.nextDirection = 'down';
-      } else if (key === 'ArrowLeft' && player.direction !== 'right') {
-        player.nextDirection = 'left';
-      } else if (key === 'ArrowRight' && player.direction !== 'left') {
-        player.nextDirection = 'right';
-      }
+      if (key === 'ArrowUp' && player.direction !== 'down') player.nextDirection = 'up';
+      else if (key === 'ArrowDown' && player.direction !== 'up') player.nextDirection = 'down';
+      else if (key === 'ArrowLeft' && player.direction !== 'right') player.nextDirection = 'left';
+      else if (key === 'ArrowRight' && player.direction !== 'left') player.nextDirection = 'right';
     });
 
     function handleArrowPress(direction) {
       if (!gameState.running || !gameState.myPlayer || !gameState.myPlayer.alive) return;
-      
       const player = gameState.myPlayer;
-      
-      if (direction === 'up' && player.direction !== 'down') {
-        player.nextDirection = 'up';
-      } else if (direction === 'down' && player.direction !== 'up') {
-        player.nextDirection = 'down';
-      } else if (direction === 'left' && player.direction !== 'right') {
-        player.nextDirection = 'left';
-      } else if (direction === 'right' && player.direction !== 'left') {
-        player.nextDirection = 'right';
-      }
+      if (direction === 'up' && player.direction !== 'down') player.nextDirection = 'up';
+      else if (direction === 'down' && player.direction !== 'up') player.nextDirection = 'down';
+      else if (direction === 'left' && player.direction !== 'right') player.nextDirection = 'left';
+      else if (direction === 'right' && player.direction !== 'left') player.nextDirection = 'right';
     }
 
-    document.getElementById('arrowUp').addEventListener('touchstart', (e) => {
-      e.preventDefault();
-      handleArrowPress('up');
-    }, { passive: false });
-
-    document.getElementById('arrowDown').addEventListener('touchstart', (e) => {
-      e.preventDefault();
-      handleArrowPress('down');
-    }, { passive: false });
-
-    document.getElementById('arrowLeft').addEventListener('touchstart', (e) => {
-      e.preventDefault();
-      handleArrowPress('left');
-    }, { passive: false });
-
-    document.getElementById('arrowRight').addEventListener('touchstart', (e) => {
-      e.preventDefault();
-      handleArrowPress('right');
-    }, { passive: false });
-
+    document.getElementById('arrowUp').addEventListener('touchstart', (e) => { e.preventDefault(); handleArrowPress('up'); }, { passive: false });
+    document.getElementById('arrowDown').addEventListener('touchstart', (e) => { e.preventDefault(); handleArrowPress('down'); }, { passive: false });
+    document.getElementById('arrowLeft').addEventListener('touchstart', (e) => { e.preventDefault(); handleArrowPress('left'); }, { passive: false });
+    document.getElementById('arrowRight').addEventListener('touchstart', (e) => { e.preventDefault(); handleArrowPress('right'); }, { passive: false });
     document.getElementById('arrowUp').addEventListener('click', () => handleArrowPress('up'));
     document.getElementById('arrowDown').addEventListener('click', () => handleArrowPress('down'));
     document.getElementById('arrowLeft').addEventListener('click', () => handleArrowPress('left'));
     document.getElementById('arrowRight').addEventListener('click', () => handleArrowPress('right'));
 
-    const touchControls = document.querySelector('.touch-controls');
-    let isDragging = false;
-    let dragStartX = 0;
-    let dragStartY = 0;
-    let controlsStartX = 0;
-    let controlsStartY = 0;
-
-    touchControls.addEventListener('touchstart', (e) => {
-      if (e.target.classList.contains('arrow-center')) {
-        isDragging = true;
-        touchControls.classList.add('dragging');
-        
-        const touch = e.touches[0];
-        dragStartX = touch.clientX;
-        dragStartY = touch.clientY;
-        
-        const rect = touchControls.getBoundingClientRect();
-        controlsStartX = rect.left;
-        controlsStartY = rect.top;
-        
-        e.preventDefault();
-      }
-    }, { passive: false });
-
-    touchControls.addEventListener('touchmove', (e) => {
-      if (isDragging) {
-        const touch = e.touches[0];
-        const deltaX = touch.clientX - dragStartX;
-        const deltaY = touch.clientY - dragStartY;
-        
-        const newLeft = controlsStartX + deltaX;
-        const newTop = controlsStartY + deltaY;
-        
-        const maxLeft = window.innerWidth - touchControls.offsetWidth;
-        const maxTop = window.innerHeight - touchControls.offsetHeight;
-        
-        touchControls.style.left = Math.max(0, Math.min(maxLeft, newLeft)) + 'px';
-        touchControls.style.top = Math.max(0, Math.min(maxTop, newTop)) + 'px';
-        touchControls.style.right = 'auto';
-        touchControls.style.bottom = 'auto';
-        
-        e.preventDefault();
-      }
-    }, { passive: false });
-
-    touchControls.addEventListener('touchend', () => {
-      if (isDragging) {
-        isDragging = false;
-        touchControls.classList.remove('dragging');
-      }
-    });
-
-    touchControls.addEventListener('mousedown', (e) => {
-      if (e.target.classList.contains('arrow-center')) {
-        isDragging = true;
-        touchControls.classList.add('dragging');
-        
-        dragStartX = e.clientX;
-        dragStartY = e.clientY;
-        
-        const rect = touchControls.getBoundingClientRect();
-        controlsStartX = rect.left;
-        controlsStartY = rect.top;
-      }
-    });
-
-    document.addEventListener('mousemove', (e) => {
-      if (isDragging) {
-        const deltaX = e.clientX - dragStartX;
-        const deltaY = e.clientY - dragStartY;
-        
-        const newLeft = controlsStartX + deltaX;
-        const newTop = controlsStartY + deltaY;
-        
-        const maxLeft = window.innerWidth - touchControls.offsetWidth;
-        const maxTop = window.innerHeight - touchControls.offsetHeight;
-        
-        touchControls.style.left = Math.max(0, Math.min(maxLeft, newLeft)) + 'px';
-        touchControls.style.top = Math.max(0, Math.min(maxTop, newTop)) + 'px';
-        touchControls.style.right = 'auto';
-        touchControls.style.bottom = 'auto';
-      }
-    });
-
-    document.addEventListener('mouseup', () => {
-      if (isDragging) {
-        isDragging = false;
-        touchControls.classList.remove('dragging');
-      }
-    });
-
     document.getElementById('logoutBtn').addEventListener('click', () => {
       const confirmOverlay = document.createElement('div');
       confirmOverlay.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: flex; align-items: center; justify-content: center; z-index: 5000;';
-      
       const confirmBox = document.createElement('div');
       confirmBox.style.cssText = 'background: linear-gradient(135deg, #667eea, #764ba2); padding: 40px; border-radius: 20px; border: 5px solid #fff; text-align: center; max-width: 90%;';
-      
       const confirmText = document.createElement('div');
       confirmText.textContent = '🚪 SAIR DO JOGO?';
-      confirmText.style.cssText = 'font-size: 28px; color: #fff; margin-bottom: 15px; font-weight: bold; text-shadow: 0 0 20px #fff;';
-      
+      confirmText.style.cssText = 'font-size: 28px; color: #fff; margin-bottom: 15px; font-weight: bold;';
       const infoText = document.createElement('div');
-      infoText.textContent = 'Seu progresso será salvo e você poderá voltar depois!';
+      infoText.textContent = 'Seu progresso será salvo!';
       infoText.style.cssText = 'font-size: 16px; color: #ddd; margin-bottom: 25px;';
-      
-      const statsText = document.createElement('div');
-      statsText.innerHTML = `
-        <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px; margin-bottom: 20px;">
-          <div style="font-size: 18px; color: #00ff88; margin: 8px 0;">⭐ Pontos Totais: ${gameState.totalScore}</div>
-          <div style="font-size: 18px; color: #ff6b6b; margin: 8px 0;">❤️ Vidas: ${gameState.lives}</div>
-          <div style="font-size: 18px; color: #ffd700; margin: 8px 0;">💀 Kills: ${gameState.kills}</div>
-        </div>
-      `;
-      
       const confirmBtnContainer = document.createElement('div');
       confirmBtnContainer.style.cssText = 'display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;';
-      
       const yesBtn = document.createElement('button');
       yesBtn.textContent = 'SIM, SAIR';
       yesBtn.style.cssText = 'padding: 15px 30px; font-size: 18px; background: linear-gradient(135deg, #ff6b6b, #ee5a6f); color: #fff; border: none; border-radius: 10px; cursor: pointer; font-weight: bold;';
-      
       const noBtn = document.createElement('button');
       noBtn.textContent = 'CONTINUAR JOGANDO';
       noBtn.style.cssText = 'padding: 15px 30px; font-size: 18px; background: linear-gradient(135deg, #00ff88, #00cc6a); color: #000; border: none; border-radius: 10px; cursor: pointer; font-weight: bold;';
-      
-      yesBtn.addEventListener('click', () => {
-        document.body.removeChild(confirmOverlay);
-        logoutPlayer();
-      });
-      
-      noBtn.addEventListener('click', () => {
-        document.body.removeChild(confirmOverlay);
-      });
-      
+      yesBtn.addEventListener('click', () => { document.body.removeChild(confirmOverlay); logoutPlayer(); });
+      noBtn.addEventListener('click', () => { document.body.removeChild(confirmOverlay); });
       confirmBtnContainer.appendChild(noBtn);
       confirmBtnContainer.appendChild(yesBtn);
       confirmBox.appendChild(confirmText);
       confirmBox.appendChild(infoText);
-      confirmBox.appendChild(statsText);
       confirmBox.appendChild(confirmBtnContainer);
       confirmOverlay.appendChild(confirmBox);
       document.body.appendChild(confirmOverlay);
     });
 
     function updateGame() {
-      updateKillerBot();
       loadOtherPlayers();
-      
       if (!gameState.running || !gameState.myPlayer || !gameState.myPlayer.alive) return;
-      
       const player = gameState.myPlayer;
       player.direction = player.nextDirection;
-      
       let newX = player.x;
       let newY = player.y;
-      
       if (player.direction === 'up') newY -= GRID_SIZE;
       if (player.direction === 'down') newY += GRID_SIZE;
       if (player.direction === 'left') newX -= GRID_SIZE;
       if (player.direction === 'right') newX += GRID_SIZE;
-      
       if (newX < 0) newX = GAME_WIDTH - GRID_SIZE;
       if (newX >= GAME_WIDTH) newX = 0;
       if (newY < 0) newY = GAME_HEIGHT - GRID_SIZE;
       if (newY >= GAME_HEIGHT) newY = 0;
-      
       const hitSelf = player.segments.slice(1).some(seg => seg.x === newX && seg.y === newY);
-      
-      if (hitSelf) {
-        gameOver();
-        return;
-      }
-      
+      if (hitSelf) { gameOver(); return; }
       for (const otherPlayer of gameState.players) {
         if (!otherPlayer.alive) continue;
-        
         const hitOther = otherPlayer.segments.some(seg => seg.x === newX && seg.y === newY);
-        if (hitOther) {
-          gameOver();
-          return;
-        }
+        if (hitOther) { gameOver(); return; }
       }
-      
       player.x = newX;
       player.y = newY;
       player.segments.unshift({x: newX, y: newY});
-      
       let ateFood = false;
-      
-      for (let i = gameState.lifePowerUps.length - 1; i >= 0; i--) {
-        const lifePowerUp = gameState.lifePowerUps[i];
-        if (lifePowerUp.x === newX && lifePowerUp.y === newY) {
-          gameState.lives++;
-          gameState.lifePowerUps.splice(i, 1);
-          showKillMessage('💎 +1 VIDA COLETADA!');
-          updateLivesDisplay();
-          updatePlayer(gameState.myPlayerId, { lives: gameState.lives });
-          break;
-        }
-      }
-      
       for (let i = gameState.foods.length - 1; i >= 0; i--) {
         const food = gameState.foods[i];
         if (food.x === newX && food.y === newY) {
@@ -1822,179 +900,57 @@
           gameState.foods.splice(i, 1);
           gameState.foods.push(createFood());
           ateFood = true;
-          checkLifeBonus();
           updateLivesDisplay();
           break;
         }
       }
-      
-      if (!ateFood) {
-        player.segments.pop();
-      }
-      
+      if (!ateFood) player.segments.pop();
       for (let i = gameState.players.length - 1; i >= 0; i--) {
         const otherPlayer = gameState.players[i];
         if (!otherPlayer.alive) continue;
-        
         if (otherPlayer.segments[0].x === newX && otherPlayer.segments[0].y === newY) {
           if (player.length >= otherPlayer.length) {
             player.length += Math.floor(otherPlayer.length / 2);
             player.score += 100;
             gameState.totalScore += 100;
             gameState.kills++;
-            
-            const newColor = randomColor();
-            player.color = newColor;
-            
-            checkLifeBonus();
+            player.color = randomColor();
             updateLivesDisplay();
             showKillMessage(`💥 Você eliminou ${otherPlayer.name}!`);
           }
         }
       }
-      
       document.getElementById('length').textContent = player.length;
       document.getElementById('kills').textContent = gameState.kills;
       document.getElementById('score').textContent = player.score;
-      
       updatePlayerOnServer();
     }
 
     function render() {
       ctx.fillStyle = '#1a1a2e';
       ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
-      
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
-      ctx.lineWidth = 1;
-      for (let x = 0; x < GAME_WIDTH; x += GRID_SIZE) {
-        ctx.beginPath();
-        ctx.moveTo(x, 0);
-        ctx.lineTo(x, GAME_HEIGHT);
-        ctx.stroke();
-      }
-      for (let y = 0; y < GAME_HEIGHT; y += GRID_SIZE) {
-        ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(GAME_WIDTH, y);
-        ctx.stroke();
-      }
-      
       gameState.foods.forEach(food => {
         ctx.fillStyle = '#ffd93d';
         ctx.beginPath();
         ctx.arc(food.x + GRID_SIZE/2, food.y + GRID_SIZE/2, GRID_SIZE/2 - 1, 0, Math.PI * 2);
         ctx.fill();
-        
-        ctx.fillStyle = 'rgba(255, 217, 61, 0.3)';
-        ctx.beginPath();
-        ctx.arc(food.x + GRID_SIZE/2, food.y + GRID_SIZE/2, GRID_SIZE/2 + 2, 0, Math.PI * 2);
-        ctx.fill();
       });
-      
-      gameState.lifePowerUps.forEach(lifePowerUp => {
-        const pulse = 0.8 + Math.sin(Date.now() / 200) * 0.2;
-        const size = GRID_SIZE * pulse;
-        
-        ctx.fillStyle = 'rgba(255, 105, 180, 0.4)';
-        ctx.beginPath();
-        ctx.arc(lifePowerUp.x + GRID_SIZE/2, lifePowerUp.y + GRID_SIZE/2, size * 0.8, 0, Math.PI * 2);
-        ctx.fill();
-        
-        ctx.fillStyle = '#ff6b9d';
-        ctx.font = `${size}px Arial`;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.shadowColor = '#ff1493';
-        ctx.shadowBlur = 15;
-        ctx.fillText('❤️', lifePowerUp.x + GRID_SIZE/2, lifePowerUp.y + GRID_SIZE/2);
-        ctx.shadowBlur = 0;
-      });
-      
-      if (gameState.killerBot && gameState.killerBotActive) {
-        const bot = gameState.killerBot;
-        
-        bot.segments.forEach((seg, i) => {
-          ctx.fillStyle = i === 0 ? '#ff0000' : '#000000';
-          ctx.fillRect(seg.x, seg.y, GRID_SIZE, GRID_SIZE);
-          
-          ctx.strokeStyle = `rgba(255, 0, 0, ${0.5 + Math.sin(Date.now() / 200) * 0.5})`;
-          ctx.lineWidth = 3;
-          ctx.strokeRect(seg.x, seg.y, GRID_SIZE, GRID_SIZE);
-          
-          if (i === 0) {
-            ctx.fillStyle = '#ff0000';
-            ctx.beginPath();
-            ctx.arc(seg.x + 3, seg.y + 3, 3, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.beginPath();
-            ctx.arc(seg.x + GRID_SIZE - 3, seg.y + 3, 3, 0, Math.PI * 2);
-            ctx.fill();
-          }
-        });
-        
-        if (bot.segments.length > 0) {
-          const head = bot.segments[0];
-          ctx.fillStyle = '#ff0000';
-          ctx.font = 'bold 12px Arial';
-          ctx.textAlign = 'center';
-          ctx.shadowColor = '#ff0000';
-          ctx.shadowBlur = 10;
-          ctx.fillText(bot.name, head.x + GRID_SIZE/2, head.y - 8);
-          ctx.shadowBlur = 0;
-        }
-      }
-      
       gameState.players.forEach(player => {
         if (!player.alive) return;
-        
         player.segments.forEach((seg, i) => {
           ctx.fillStyle = i === 0 ? player.color : adjustColor(player.color, -20);
           ctx.fillRect(seg.x + 1, seg.y + 1, GRID_SIZE - 2, GRID_SIZE - 2);
-          
-          if (i === 0) {
-            ctx.fillStyle = '#fff';
-            ctx.fillRect(seg.x + 3, seg.y + 3, 2, 2);
-            ctx.fillRect(seg.x + GRID_SIZE - 5, seg.y + 3, 2, 2);
-          }
         });
-        
-        if (player.segments.length > 0) {
-          const head = player.segments[0];
-          ctx.fillStyle = '#fff';
-          ctx.font = '10px Arial';
-          ctx.textAlign = 'center';
-          ctx.fillText(player.name, head.x + GRID_SIZE/2, head.y - 5);
-        }
       });
-      
       if (gameState.myPlayer && gameState.myPlayer.alive) {
         const player = gameState.myPlayer;
-        
         player.segments.forEach((seg, i) => {
           ctx.fillStyle = i === 0 ? player.color : adjustColor(player.color, -20);
           ctx.fillRect(seg.x + 1, seg.y + 1, GRID_SIZE - 2, GRID_SIZE - 2);
-          
           ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
           ctx.lineWidth = 2;
           ctx.strokeRect(seg.x + 1, seg.y + 1, GRID_SIZE - 2, GRID_SIZE - 2);
-          
-          if (i === 0) {
-            ctx.fillStyle = '#fff';
-            ctx.fillRect(seg.x + 3, seg.y + 3, 2, 2);
-            ctx.fillRect(seg.x + GRID_SIZE - 5, seg.y + 3, 2, 2);
-            ctx.fillStyle = '#000';
-            ctx.fillRect(seg.x + 4, seg.y + 4, 1, 1);
-            ctx.fillRect(seg.x + GRID_SIZE - 4, seg.y + 4, 1, 1);
-          }
         });
-        
-        if (player.segments.length > 0) {
-          const head = player.segments[0];
-          ctx.fillStyle = '#00ff88';
-          ctx.font = 'bold 12px Arial';
-          ctx.textAlign = 'center';
-          ctx.fillText(player.name + ' (VOCÊ)', head.x + GRID_SIZE/2, head.y - 8);
-        }
       }
     }
 
@@ -2007,39 +963,28 @@
     }
 
     function updateLeaderboard(players) {
-      const sorted = [...players]
-        .filter(p => p.alive)
-        .sort((a, b) => b.score - a.score)
-        .slice(0, 10);
-      
+      const sorted = [...players].filter(p => p.alive).sort((a, b) => b.score - a.score).slice(0, 10);
       const list = document.getElementById('leaderboardList');
       list.innerHTML = '';
-      
       sorted.forEach((player, index) => {
         const item = document.createElement('div');
         item.className = 'leaderboard-item' + (player.player_id === gameState.myPlayerId ? ' you' : '');
-        
         const rank = document.createElement('span');
         rank.className = 'rank';
         rank.textContent = `#${index + 1}`;
-        
         const info = document.createElement('div');
         info.className = 'player-info';
-        
         const name = document.createElement('div');
         name.className = 'player-name';
         name.textContent = player.player_name + (player.player_id === gameState.myPlayerId ? ' (VOCÊ)' : '');
-        
         const score = document.createElement('div');
         score.className = 'player-score';
         score.textContent = `${player.score} pts`;
-        
         info.appendChild(name);
         info.appendChild(score);
         item.appendChild(rank);
         item.appendChild(info);
         list.appendChild(item);
-        
         if (player.player_id === gameState.myPlayerId) {
           document.getElementById('rank').textContent = `#${index + 1}`;
         }
@@ -2052,51 +997,35 @@
       msg.className = 'kill-message';
       msg.textContent = message;
       killFeed.appendChild(msg);
-      
-      setTimeout(() => {
-        msg.remove();
-      }, 2000);
+      setTimeout(() => { msg.remove(); }, 2000);
     }
 
-    function gameOver(customMessage) {
+    function gameOver() {
       gameState.lives--;
-      
       if (gameState.lives > 0) {
-        const message = customMessage || `💀 MORREU! ❤️ ${gameState.lives} vidas restantes`;
-        showKillMessage(message);
+        showKillMessage(`💀 MORREU! ❤️ ${gameState.lives} vidas restantes`);
         updateLivesDisplay();
-        
         const startX = Math.floor(Math.random() * (GAME_WIDTH / GRID_SIZE)) * GRID_SIZE;
         const startY = Math.floor(Math.random() * (GAME_HEIGHT / GRID_SIZE)) * GRID_SIZE;
-        
         gameState.myPlayer.x = startX;
         gameState.myPlayer.y = startY;
         gameState.myPlayer.direction = 'right';
         gameState.myPlayer.nextDirection = 'right';
-        gameState.myPlayer.segments = [
-          {x: startX, y: startY},
-          {x: startX - GRID_SIZE, y: startY},
-          {x: startX - GRID_SIZE * 2, y: startY}
-        ];
+        gameState.myPlayer.segments = [{x: startX, y: startY}, {x: startX - GRID_SIZE, y: startY}, {x: startX - GRID_SIZE * 2, y: startY}];
         gameState.myPlayer.length = 3;
         gameState.myPlayer.alive = true;
-        
         return;
       }
-      
       gameState.running = false;
       markPlayerDead();
-      
       document.getElementById('finalLength').textContent = gameState.myPlayer.length;
       document.getElementById('finalKills').textContent = gameState.kills;
       document.getElementById('finalScore').textContent = gameState.totalScore;
       document.getElementById('livesRemaining').textContent = gameState.lives;
-      
       const allPlayers = getAllPlayers();
       const sorted = [...allPlayers].sort((a, b) => b.total_score - a.total_score);
       const myRank = sorted.findIndex(p => p.player_id === gameState.myPlayerId) + 1;
       document.getElementById('finalRank').textContent = `#${myRank}`;
-      
       document.getElementById('gameOver').classList.add('show');
     }
 
@@ -2105,9 +1034,7 @@
       errorDiv.textContent = '❌ ' + message;
       errorDiv.style.display = 'block';
       document.getElementById('authSuccess').style.display = 'none';
-      setTimeout(() => {
-        errorDiv.style.display = 'none';
-      }, 5000);
+      setTimeout(() => { errorDiv.style.display = 'none'; }, 5000);
     }
 
     function showSuccess(message) {
@@ -2115,17 +1042,15 @@
       successDiv.textContent = '✅ ' + message;
       successDiv.style.display = 'block';
       document.getElementById('authError').style.display = 'none';
-      setTimeout(() => {
-        successDiv.style.display = 'none';
-      }, 3000);
+      setTimeout(() => { successDiv.style.display = 'none'; }, 3000);
     }
 
     document.getElementById('loginModeBtn').addEventListener('click', () => {
       if (authMode === 'register') {
         authMode = 'login';
-        document.getElementById('authSubtitle').textContent = 'Faça login com sua conta existente!';
+        document.getElementById('authSubtitle').textContent = 'Faça login com sua conta!';
         document.getElementById('startBtn').textContent = 'FAZER LOGIN';
-        document.getElementById('loginModeBtn').textContent = 'NÃO TENHO CONTA - CRIAR NOVA';
+        document.getElementById('loginModeBtn').textContent = 'CRIAR NOVA CONTA';
       } else {
         authMode = 'register';
         document.getElementById('authSubtitle').textContent = 'Crie sua conta ou faça login!';
@@ -2159,9 +1084,7 @@
         `Atenciosamente,\n` +
         `${playerName}`
       );
-      
       window.open(`mailto:juridicofpolis@gmail.com?subject=${subject}&body=${body}`, '_blank');
-      
       showKillMessage('📧 Email enviado! Aguarde confirmação');
       setTimeout(() => {
         document.getElementById('storeModal').classList.remove('show');
@@ -2183,9 +1106,7 @@
         `Atenciosamente,\n` +
         `${playerName}`
       );
-      
       window.open(`mailto:juridicofpolis@gmail.com?subject=${subject}&body=${body}`, '_blank');
-      
       showKillMessage('📧 Email enviado! Aguarde confirmação');
       setTimeout(() => {
         document.getElementById('storeModal').classList.remove('show');
@@ -2195,34 +1116,26 @@
     document.getElementById('adminBtn').addEventListener('click', () => {
       const overlay = document.createElement('div');
       overlay.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: flex; align-items: center; justify-content: center; z-index: 4000;';
-      
       const box = document.createElement('div');
       box.style.cssText = 'background: linear-gradient(135deg, #a29bfe, #6c5ce7); padding: 40px; border-radius: 20px; border: 5px solid #fff; text-align: center;';
-      
       const title = document.createElement('div');
       title.textContent = '🔐 ACESSO ADMIN';
-      title.style.cssText = 'font-size: 28px; color: #fff; margin-bottom: 20px; font-weight: bold; text-shadow: 0 0 20px #fff;';
-      
+      title.style.cssText = 'font-size: 28px; color: #fff; margin-bottom: 20px; font-weight: bold;';
       const input = document.createElement('input');
       input.type = 'password';
       input.placeholder = 'Digite a senha';
       input.style.cssText = 'width: 300px; padding: 15px; font-size: 18px; border: 3px solid #fff; border-radius: 10px; background: rgba(0,0,0,0.5); color: #fff; text-align: center; margin-bottom: 20px; outline: none;';
-      
       const btnContainer = document.createElement('div');
       btnContainer.style.cssText = 'display: flex; gap: 10px; justify-content: center;';
-      
       const confirmBtn = document.createElement('button');
       confirmBtn.textContent = 'ENTRAR';
       confirmBtn.style.cssText = 'padding: 12px 30px; font-size: 18px; background: linear-gradient(135deg, #00ff88, #00cc6a); color: #000; border: none; border-radius: 10px; cursor: pointer; font-weight: bold;';
-      
       const cancelBtn = document.createElement('button');
       cancelBtn.textContent = 'CANCELAR';
       cancelBtn.style.cssText = 'padding: 12px 30px; font-size: 18px; background: linear-gradient(135deg, #ff6b6b, #ee5a6f); color: #fff; border: none; border-radius: 10px; cursor: pointer; font-weight: bold;';
-      
       const errorMsg = document.createElement('div');
       errorMsg.style.cssText = 'color: #ff6b6b; font-size: 14px; margin-top: 10px; font-weight: bold; display: none;';
       errorMsg.textContent = '❌ Senha incorreta!';
-      
       confirmBtn.addEventListener('click', () => {
         if (input.value === '424398') {
           gameState.isAdmin = true;
@@ -2235,17 +1148,12 @@
           input.focus();
         }
       });
-      
       cancelBtn.addEventListener('click', () => {
         document.body.removeChild(overlay);
       });
-      
       input.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-          confirmBtn.click();
-        }
+        if (e.key === 'Enter') confirmBtn.click();
       });
-      
       btnContainer.appendChild(confirmBtn);
       btnContainer.appendChild(cancelBtn);
       box.appendChild(title);
@@ -2254,16 +1162,11 @@
       box.appendChild(errorMsg);
       overlay.appendChild(box);
       document.body.appendChild(overlay);
-      
       setTimeout(() => input.focus(), 100);
     });
 
     document.getElementById('closeAdminBtn').addEventListener('click', () => {
       document.getElementById('adminPanel').classList.remove('show');
-      if (adminUpdateInterval) {
-        clearInterval(adminUpdateInterval);
-        adminUpdateInterval = null;
-      }
     });
 
     function loadAdminData() {
@@ -2271,39 +1174,29 @@
       const now = Date.now();
       const PLAYER_INACTIVE_TIME = 10000;
       const alivePlayers = allPlayers.filter(p => p.alive && (now - p.last_update < PLAYER_INACTIVE_TIME));
-      
       document.getElementById('adminTotalPlayers').textContent = allPlayers.length;
       document.getElementById('adminAlivePlayers').textContent = alivePlayers.length;
-      
       const playersList = document.getElementById('adminPlayersList');
       playersList.innerHTML = '';
-      
       if (allPlayers.length === 0) {
         playersList.innerHTML = '<div class="no-players-message">Nenhum jogador cadastrado ainda</div>';
       } else {
         const sortedPlayers = [...allPlayers].sort((a, b) => b.total_score - a.total_score);
-        
         sortedPlayers.forEach(player => {
           const item = document.createElement('div');
           item.className = 'admin-player-item';
-          
           const info = document.createElement('div');
           info.className = 'admin-player-info';
-          
           const name = document.createElement('div');
           name.className = 'admin-player-name';
-          name.textContent = player.player_name + (player.is_admin ? ' 👑' : '') + (player.alive ? ' ✅' : ' 💀');
-          
+          name.textContent = player.player_name + (player.alive ? ' ✅' : ' 💀');
           const stats = document.createElement('div');
           stats.className = 'admin-player-stats';
           stats.textContent = `Score: ${player.total_score} | Vidas: ${player.lives} | Tamanho: ${player.length}`;
-          
           info.appendChild(name);
           info.appendChild(stats);
-          
           const actions = document.createElement('div');
           actions.className = 'admin-actions';
-          
           const addLifeBtn = document.createElement('button');
           addLifeBtn.className = 'admin-action-btn add-life-btn';
           addLifeBtn.textContent = '+❤️';
@@ -2312,7 +1205,6 @@
             showKillMessage(`+1 vida para ${player.player_name}!`);
             loadAdminData();
           };
-          
           const removeLifeBtn = document.createElement('button');
           removeLifeBtn.className = 'admin-action-btn remove-life-btn';
           removeLifeBtn.textContent = '-❤️';
@@ -2323,42 +1215,33 @@
               loadAdminData();
             }
           };
-          
           const kickBtn = document.createElement('button');
           kickBtn.className = 'admin-action-btn kick-btn';
           kickBtn.textContent = 'EXPULSAR';
           kickBtn.onclick = () => {
             const confirmOverlay = document.createElement('div');
             confirmOverlay.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: flex; align-items: center; justify-content: center; z-index: 5000;';
-            
             const confirmBox = document.createElement('div');
             confirmBox.style.cssText = 'background: linear-gradient(135deg, #ff6b6b, #ee5a6f); padding: 30px; border-radius: 20px; border: 5px solid #fff; text-align: center;';
-            
             const confirmText = document.createElement('div');
             confirmText.textContent = `Expulsar ${player.player_name}?`;
             confirmText.style.cssText = 'font-size: 24px; color: #fff; margin-bottom: 20px; font-weight: bold;';
-            
             const confirmBtnContainer = document.createElement('div');
             confirmBtnContainer.style.cssText = 'display: flex; gap: 10px; justify-content: center;';
-            
             const yesBtn = document.createElement('button');
             yesBtn.textContent = 'SIM';
             yesBtn.style.cssText = 'padding: 12px 30px; font-size: 18px; background: #fff; color: #ff6b6b; border: none; border-radius: 10px; cursor: pointer; font-weight: bold;';
-            
             const noBtn = document.createElement('button');
             noBtn.textContent = 'NÃO';
             noBtn.style.cssText = 'padding: 12px 30px; font-size: 18px; background: rgba(0,0,0,0.5); color: #fff; border: none; border-radius: 10px; cursor: pointer; font-weight: bold;';
-            
             yesBtn.addEventListener('click', () => {
               deletePlayer(player.player_id);
               document.body.removeChild(confirmOverlay);
               loadAdminData();
             });
-            
             noBtn.addEventListener('click', () => {
               document.body.removeChild(confirmOverlay);
             });
-            
             confirmBtnContainer.appendChild(yesBtn);
             confirmBtnContainer.appendChild(noBtn);
             confirmBox.appendChild(confirmText);
@@ -2366,57 +1249,29 @@
             confirmOverlay.appendChild(confirmBox);
             document.body.appendChild(confirmOverlay);
           };
-          
           actions.appendChild(addLifeBtn);
           actions.appendChild(removeLifeBtn);
           actions.appendChild(kickBtn);
-          
           item.appendChild(info);
           item.appendChild(actions);
           playersList.appendChild(item);
         });
-      }
-      
-      if (document.getElementById('adminPanel').classList.contains('show') && !adminUpdateInterval) {
-        adminUpdateInterval = setInterval(() => {
-          if (document.getElementById('adminPanel').classList.contains('show')) {
-            loadAdminData();
-          } else {
-            clearInterval(adminUpdateInterval);
-            adminUpdateInterval = null;
-          }
-        }, 3000);
       }
     }
 
     document.getElementById('startBtn').addEventListener('click', () => {
       const name = document.getElementById('nameInput').value.trim();
       const password = document.getElementById('passwordInput').value.trim();
-      
-      if (!name) {
-        showError('Digite seu nome!');
-        document.getElementById('nameInput').focus();
-        return;
-      }
-      
-      if (!password) {
-        showError('Digite sua senha!');
-        document.getElementById('passwordInput').focus();
-        return;
-      }
-      
+      if (!name) { showError('Digite seu nome!'); document.getElementById('nameInput').focus(); return; }
+      if (!password) { showError('Digite sua senha!'); document.getElementById('passwordInput').focus(); return; }
       if (authMode === 'register') {
-        const newPlayer = createPlayer(name, password, gameState.isAdmin);
+        const newPlayer = createPlayer(name, password);
         if (!newPlayer) return;
-        
         gameState.myPlayerId = newPlayer.player_id;
         gameState.myPassword = newPlayer.password;
-        gameState.isAdmin = newPlayer.is_admin;
         gameState.kills = 0;
         gameState.lives = 3;
         gameState.totalScore = 0;
-        gameState.lastLifeScore = 0;
-        
         gameState.myPlayer = {
           id: newPlayer.player_id,
           name: newPlayer.player_name,
@@ -2424,42 +1279,25 @@
           y: newPlayer.y,
           direction: 'right',
           nextDirection: 'right',
-          segments: [
-            {x: newPlayer.x, y: newPlayer.y},
-            {x: newPlayer.x - GRID_SIZE, y: newPlayer.y},
-            {x: newPlayer.x - GRID_SIZE * 2, y: newPlayer.y}
-          ],
+          segments: [{x: newPlayer.x, y: newPlayer.y}, {x: newPlayer.x - GRID_SIZE, y: newPlayer.y}, {x: newPlayer.x - GRID_SIZE * 2, y: newPlayer.y}],
           length: 3,
           color: newPlayer.color,
           alive: true,
           score: 0
         };
-        
         updateLivesDisplay();
         showSuccess('Conta criada com sucesso!');
       } else {
         const existing = getPlayerByName(name);
-        
-        if (!existing) {
-          showError('Jogador não encontrado! Crie uma conta primeiro.');
-          return;
-        }
-        
+        if (!existing) { showError('Jogador não encontrado!'); return; }
         const passwordHash = hashPassword(password);
-        if (existing.password !== passwordHash) {
-          showError('Senha incorreta!');
-          return;
-        }
-        
+        if (existing.password !== passwordHash) { showError('Senha incorreta!'); return; }
         gameState.myPlayerId = existing.player_id;
         gameState.myPassword = passwordHash;
-        gameState.isAdmin = existing.is_admin;
         gameState.lives = existing.lives;
         gameState.totalScore = existing.total_score;
-        
         const startX = Math.floor(Math.random() * (GAME_WIDTH / GRID_SIZE)) * GRID_SIZE;
         const startY = Math.floor(Math.random() * (GAME_HEIGHT / GRID_SIZE)) * GRID_SIZE;
-        
         gameState.myPlayer = {
           id: existing.player_id,
           name: existing.player_name,
@@ -2467,103 +1305,51 @@
           y: startY,
           direction: 'right',
           nextDirection: 'right',
-          segments: [
-            {x: startX, y: startY},
-            {x: startX - GRID_SIZE, y: startY},
-            {x: startX - GRID_SIZE * 2, y: startY}
-          ],
+          segments: [{x: startX, y: startY}, {x: startX - GRID_SIZE, y: startY}, {x: startX - GRID_SIZE * 2, y: startY}],
           length: 3,
           color: existing.color,
           alive: true,
           score: 0
         };
-        
         gameState.kills = 0;
-        gameState.lastLifeScore = Math.floor(gameState.totalScore / 1000) * 1000;
-        
-        updatePlayer(existing.player_id, {
-          x: startX,
-          y: startY,
-          direction: 'right',
-          length: 3,
-          alive: true,
-          score: 0
-        });
-        
+        updatePlayer(existing.player_id, { x: startX, y: startY, direction: 'right', length: 3, alive: true, score: 0 });
         updateLivesDisplay();
-        showSuccess('Login realizado com sucesso!');
+        showSuccess('Login realizado!');
       }
-      
       setTimeout(() => {
         document.getElementById('nameInputOverlay').style.display = 'none';
         gameState.running = true;
-        
         setInterval(updateGame, UPDATE_INTERVAL);
-        
-        function gameLoop() {
-          render();
-          if (gameState.running) {
-            requestAnimationFrame(gameLoop);
-          }
-        }
+        function gameLoop() { render(); if (gameState.running) requestAnimationFrame(gameLoop); }
         gameLoop();
       }, 1000);
     });
 
     document.getElementById('restartBtn').addEventListener('click', () => {
       document.getElementById('gameOver').classList.remove('show');
-      
       if (gameState.lives > 0) {
         const startX = Math.floor(Math.random() * (GAME_WIDTH / GRID_SIZE)) * GRID_SIZE;
         const startY = Math.floor(Math.random() * (GAME_HEIGHT / GRID_SIZE)) * GRID_SIZE;
-        
         gameState.myPlayer.x = startX;
         gameState.myPlayer.y = startY;
         gameState.myPlayer.direction = 'right';
         gameState.myPlayer.nextDirection = 'right';
-        gameState.myPlayer.segments = [
-          {x: startX, y: startY},
-          {x: startX - GRID_SIZE, y: startY},
-          {x: startX - GRID_SIZE * 2, y: startY}
-        ];
+        gameState.myPlayer.segments = [{x: startX, y: startY}, {x: startX - GRID_SIZE, y: startY}, {x: startX - GRID_SIZE * 2, y: startY}];
         gameState.myPlayer.length = 3;
         gameState.myPlayer.alive = true;
         gameState.myPlayer.score = 0;
         gameState.kills = 0;
-        
-        updatePlayer(gameState.myPlayerId, {
-          x: startX,
-          y: startY,
-          direction: 'right',
-          length: 3,
-          alive: true,
-          score: 0,
-          lives: gameState.lives,
-          total_score: gameState.totalScore
-        });
-        
+        updatePlayer(gameState.myPlayerId, { x: startX, y: startY, direction: 'right', length: 3, alive: true, score: 0, lives: gameState.lives, total_score: gameState.totalScore });
         updateLivesDisplay();
         gameState.running = true;
       } else {
-        gameState.running = false;
-        gameState.myPlayer = null;
-        gameState.myPlayerId = null;
-        gameState.myPassword = null;
-        gameState.isAdmin = false;
-        gameState.kills = 0;
-        gameState.lives = 3;
-        gameState.totalScore = 0;
-        gameState.lastLifeScore = 0;
-        
         location.reload();
       }
     });
 
     window.addEventListener('beforeunload', () => {
-      if (gameState.myPlayerId) {
-        markPlayerDead();
-      }
+      if (gameState.myPlayerId) markPlayerDead();
     });
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a8fdd1d5637f41e',t:'MTc2NDg5OTEyMy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a8fe6ed67e1f41e',t:'MTc2NDg5OTUyNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>

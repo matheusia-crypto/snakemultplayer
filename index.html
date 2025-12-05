@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Snake Battle Royale</title>
-  <script src="/_sdk/data_sdk.js"></script>
   <style>
     body {
       box-sizing: border-box;
@@ -881,71 +880,14 @@
       font-weight: bold;
       text-shadow: 0 0 20px #fff;
     }
-
-    .connection-status {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: rgba(0, 0, 0, 0.95);
-      padding: 30px 50px;
-      border-radius: 20px;
-      border: 3px solid #00ff88;
-      box-shadow: 0 0 40px rgba(0, 255, 136, 0.5);
-      text-align: center;
-      z-index: 1500;
-      display: none;
-    }
-
-    .connection-status.show {
-      display: block;
-    }
-
-    .connection-status-title {
-      font-size: 24px;
-      color: #00ff88;
-      margin-bottom: 15px;
-      font-weight: bold;
-    }
-
-    .connection-status-text {
-      font-size: 16px;
-      color: #fff;
-      margin: 10px 0;
-    }
-
-    .spinner {
-      width: 50px;
-      height: 50px;
-      border: 5px solid rgba(0, 255, 136, 0.2);
-      border-top-color: #00ff88;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin: 20px auto;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
   </style>
   <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
   <script src="/_sdk/element_sdk.js" type="text/javascript"></script>
   <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
  </head>
  <body>
   <div id="gameContainer">
-   <div class="connection-status" id="connectionStatus">
-    <div class="connection-status-title">
-     🔄 CONECTANDO AO SERVIDOR
-    </div>
-    <div class="spinner"></div>
-    <div class="connection-status-text" id="connectionAttempt">
-     Tentativa 1 de 10...
-    </div>
-    <div class="connection-status-text" style="color: #ccc; font-size: 14px; margin-top: 15px;">
-     Aguarde alguns segundos...
-    </div>
-   </div>
    <div class="name-input-overlay" id="nameInputOverlay">
     <div class="name-input-box">
      <div class="name-input-title">
@@ -1134,13 +1076,80 @@
     const GAME_HEIGHT = canvas.height;
     const UPDATE_INTERVAL = 100;
     const FOOD_COUNT = 30;
-    const PLAYER_INACTIVE_TIME = 10000;
     const KILLER_BOT_INTERVAL = 3 * 60 * 60 * 1000;
     const KILLER_BOT_DURATION = 2 * 60 * 1000;
     
     let authMode = 'register';
-    let allPlayersData = [];
     let adminUpdateInterval = null;
+    
+    // LocalStorage Helper Functions
+    function getAllPlayers() {
+      const players = localStorage.getItem('snake_players');
+      return players ? JSON.parse(players) : [];
+    }
+    
+    function saveAllPlayers(players) {
+      localStorage.setItem('snake_players', JSON.stringify(players));
+    }
+    
+    function getPlayerByName(name) {
+      const players = getAllPlayers();
+      return players.find(p => p.player_name.toLowerCase() === name.toLowerCase());
+    }
+    
+    function createPlayer(name, password, isAdmin = false) {
+      const existing = getPlayerByName(name);
+      if (existing) {
+        showError('Este nome já está em uso! Escolha outro nome.');
+        return null;
+      }
+      
+      const players = getAllPlayers();
+      const playerId = generateId();
+      const passwordHash = hashPassword(password);
+      const startX = Math.floor(Math.random() * (GAME_WIDTH / GRID_SIZE)) * GRID_SIZE;
+      const startY = Math.floor(Math.random() * (GAME_HEIGHT / GRID_SIZE)) * GRID_SIZE;
+      const playerColor = randomColor();
+      
+      const newPlayer = {
+        player_id: playerId,
+        player_name: name,
+        password: passwordHash,
+        x: startX,
+        y: startY,
+        direction: 'right',
+        length: 3,
+        color: playerColor,
+        alive: true,
+        score: 0,
+        lives: 3,
+        total_score: 0,
+        is_admin: isAdmin,
+        last_update: Date.now()
+      };
+      
+      players.push(newPlayer);
+      saveAllPlayers(players);
+      
+      return newPlayer;
+    }
+    
+    function updatePlayer(playerId, updates) {
+      const players = getAllPlayers();
+      const index = players.findIndex(p => p.player_id === playerId);
+      if (index !== -1) {
+        players[index] = { ...players[index], ...updates, last_update: Date.now() };
+        saveAllPlayers(players);
+        return players[index];
+      }
+      return null;
+    }
+    
+    function deletePlayer(playerId) {
+      const players = getAllPlayers();
+      const filtered = players.filter(p => p.player_id !== playerId);
+      saveAllPlayers(filtered);
+    }
     
     let gameState = {
       myPlayerId: null,
@@ -1407,7 +1416,9 @@
     }
 
     setInterval(() => {
-      activateKillerBot();
+      if (gameState.running) {
+        activateKillerBot();
+      }
     }, KILLER_BOT_INTERVAL);
     
     setTimeout(() => {
@@ -1416,34 +1427,31 @@
       }
     }, 10000);
 
-    const dataHandler = {
-      onDataChanged(data) {
-        allPlayersData = data;
-        
-        const now = Date.now();
-        const activePlayers = data.filter(p => now - p.last_update < PLAYER_INACTIVE_TIME);
-        
-        gameState.players = activePlayers
-          .filter(p => p.player_id !== gameState.myPlayerId)
-          .map(p => ({
-            id: p.player_id,
-            name: p.player_name,
-            x: p.x,
-            y: p.y,
-            direction: p.direction,
-            length: p.length,
-            color: p.color,
-            alive: p.alive,
-            score: p.score,
-            segments: generateSegments(p.x, p.y, p.direction, p.length)
-          }));
-        
-        updateLeaderboard(activePlayers);
-        
-        const alivePlayers = activePlayers.filter(p => p.alive).length;
-        document.getElementById('playersAlive').textContent = alivePlayers;
-      }
-    };
+    function loadOtherPlayers() {
+      const allPlayers = getAllPlayers();
+      const now = Date.now();
+      const PLAYER_INACTIVE_TIME = 10000;
+      
+      gameState.players = allPlayers
+        .filter(p => p.player_id !== gameState.myPlayerId && (now - p.last_update < PLAYER_INACTIVE_TIME))
+        .map(p => ({
+          id: p.player_id,
+          name: p.player_name,
+          x: p.x,
+          y: p.y,
+          direction: p.direction,
+          length: p.length,
+          color: p.color,
+          alive: p.alive,
+          score: p.score,
+          segments: generateSegments(p.x, p.y, p.direction, p.length)
+        }));
+      
+      updateLeaderboard(allPlayers.filter(p => now - p.last_update < PLAYER_INACTIVE_TIME));
+      
+      const alivePlayers = allPlayers.filter(p => p.alive && (now - p.last_update < PLAYER_INACTIVE_TIME)).length;
+      document.getElementById('playersAlive').textContent = alivePlayers;
+    }
 
     function generateSegments(headX, headY, direction, length) {
       const segments = [{x: headX, y: headY}];
@@ -1464,230 +1472,6 @@
       }
       
       return segments;
-    }
-
-    let sdkInitialized = false;
-    let initPromise = null;
-    
-    async function initDataSdk() {
-      if (sdkInitialized) return true;
-      if (initPromise) return initPromise;
-      
-      initPromise = (async () => {
-        const maxRetries = 10;
-        let attempt = 0;
-        
-        document.getElementById('connectionStatus').classList.add('show');
-        
-        while (attempt < maxRetries) {
-          try {
-            attempt++;
-            document.getElementById('connectionAttempt').textContent = `Tentativa ${attempt} de ${maxRetries}...`;
-            
-            // Aguarda o script SDK carregar completamente
-            let waitTime = 0;
-            const maxWaitTime = 10000; // 10 segundos
-            while (!window.dataSdk && waitTime < maxWaitTime) {
-              await new Promise(resolve => setTimeout(resolve, 300));
-              waitTime += 300;
-            }
-            
-            if (!window.dataSdk) {
-              if (attempt < maxRetries) {
-                await new Promise(resolve => setTimeout(resolve, 2000));
-                continue;
-              }
-              document.getElementById('connectionStatus').classList.remove('show');
-              showError('SDK não carregou. Verifique sua conexão e recarregue a página.');
-              return false;
-            }
-            
-            // Tenta inicializar o SDK
-            const result = await Promise.race([
-              window.dataSdk.init(dataHandler),
-              new Promise((_, reject) => 
-                setTimeout(() => reject(new Error('Timeout')), 10000)
-              )
-            ]);
-            
-            if (result.isError) {
-              if (attempt < maxRetries) {
-                await new Promise(resolve => setTimeout(resolve, 2500));
-                continue;
-              }
-              document.getElementById('connectionStatus').classList.remove('show');
-              showError('Servidor não responde. Tente novamente em alguns segundos.');
-              return false;
-            }
-            
-            // Sucesso!
-            sdkInitialized = true;
-            document.getElementById('connectionStatus').classList.remove('show');
-            return true;
-            
-          } catch (error) {
-            if (attempt < maxRetries) {
-              await new Promise(resolve => setTimeout(resolve, 2500));
-              continue;
-            }
-            document.getElementById('connectionStatus').classList.remove('show');
-            showError('Erro de conexão. Recarregue a página.');
-            return false;
-          }
-        }
-        
-        document.getElementById('connectionStatus').classList.remove('show');
-        return false;
-      })();
-      
-      return initPromise;
-    }
-    
-    // Auto inicialização com delay maior para GitHub Pages
-    window.addEventListener('load', async () => {
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      const success = await initDataSdk();
-      if (!success) {
-        console.log('⚠️ Falha na auto-conexão. Clique em CRIAR CONTA/LOGIN para tentar novamente.');
-      }
-    });
-
-    async function playerExists(name) {
-      return allPlayersData.find(p => p.player_name.toLowerCase() === name.toLowerCase());
-    }
-
-    async function createPlayer(name, password, isAdmin = false) {
-      const existing = await playerExists(name);
-      if (existing) {
-        showError('Este nome já está em uso! Escolha outro nome.');
-        return false;
-      }
-      
-      const playerId = generateId();
-      const passwordHash = hashPassword(password);
-      const startX = Math.floor(Math.random() * (GAME_WIDTH / GRID_SIZE)) * GRID_SIZE;
-      const startY = Math.floor(Math.random() * (GAME_HEIGHT / GRID_SIZE)) * GRID_SIZE;
-      const playerColor = randomColor();
-      
-      const newPlayerData = {
-        player_id: playerId,
-        player_name: name,
-        password: passwordHash,
-        x: startX,
-        y: startY,
-        direction: 'right',
-        length: 3,
-        color: playerColor,
-        alive: true,
-        score: 0,
-        lives: 3,
-        total_score: 0,
-        is_admin: isAdmin,
-        last_update: Date.now()
-      };
-      
-      const result = await window.dataSdk.create(newPlayerData);
-      
-      if (result.isError) {
-        showError('Erro ao criar conta: ' + (result.error?.message || 'Erro desconhecido'));
-        return false;
-      }
-      
-      gameState.myPlayerId = playerId;
-      gameState.myPassword = passwordHash;
-      gameState.isAdmin = isAdmin;
-      gameState.kills = 0;
-      gameState.lives = 3;
-      gameState.totalScore = 0;
-      gameState.lastLifeScore = 0;
-      
-      gameState.myPlayer = {
-        id: playerId,
-        name: name,
-        x: startX,
-        y: startY,
-        direction: 'right',
-        nextDirection: 'right',
-        segments: [
-          {x: startX, y: startY},
-          {x: startX - GRID_SIZE, y: startY},
-          {x: startX - GRID_SIZE * 2, y: startY}
-        ],
-        length: 3,
-        color: playerColor,
-        alive: true,
-        score: 0
-      };
-      
-      updateLivesDisplay();
-      showSuccess('Conta criada com sucesso!');
-      return true;
-    }
-
-    async function loginPlayer(name, password) {
-      const existing = await playerExists(name);
-      
-      if (!existing) {
-        showError('Jogador não encontrado! Crie uma conta primeiro.');
-        return false;
-      }
-      
-      const passwordHash = hashPassword(password);
-      if (existing.password !== passwordHash) {
-        showError('Senha incorreta!');
-        return false;
-      }
-      
-      gameState.myPlayerId = existing.player_id;
-      gameState.myPassword = passwordHash;
-      gameState.isAdmin = existing.is_admin;
-      gameState.lives = existing.lives;
-      gameState.totalScore = existing.total_score;
-      
-      const startX = Math.floor(Math.random() * (GAME_WIDTH / GRID_SIZE)) * GRID_SIZE;
-      const startY = Math.floor(Math.random() * (GAME_HEIGHT / GRID_SIZE)) * GRID_SIZE;
-      
-      gameState.myPlayer = {
-        id: existing.player_id,
-        name: existing.player_name,
-        x: startX,
-        y: startY,
-        direction: 'right',
-        nextDirection: 'right',
-        segments: [
-          {x: startX, y: startY},
-          {x: startX - GRID_SIZE, y: startY},
-          {x: startX - GRID_SIZE * 2, y: startY}
-        ],
-        length: 3,
-        color: existing.color,
-        alive: true,
-        score: 0
-      };
-      
-      gameState.kills = 0;
-      gameState.lastLifeScore = Math.floor(gameState.totalScore / 1000) * 1000;
-      
-      const result = await window.dataSdk.update({
-        ...existing,
-        x: startX,
-        y: startY,
-        direction: 'right',
-        length: 3,
-        alive: true,
-        score: 0,
-        last_update: Date.now()
-      });
-      
-      if (result.isError) {
-        showError('Erro ao fazer login');
-        return false;
-      }
-      
-      updateLivesDisplay();
-      showSuccess('Login realizado com sucesso!');
-      return true;
     }
 
     function updateLivesDisplay() {
@@ -1719,62 +1503,44 @@
       }
     }
 
-    async function updatePlayerOnServer() {
+    function updatePlayerOnServer() {
       if (!gameState.myPlayer || !gameState.myPlayer.alive) return;
       
-      const myData = allPlayersData.find(p => p.player_id === gameState.myPlayerId);
-      
-      if (myData) {
-        await window.dataSdk.update({
-          ...myData,
-          x: gameState.myPlayer.x,
-          y: gameState.myPlayer.y,
-          direction: gameState.myPlayer.direction,
-          length: gameState.myPlayer.length,
-          color: gameState.myPlayer.color,
-          score: gameState.myPlayer.score,
-          alive: gameState.myPlayer.alive,
-          lives: gameState.lives,
-          total_score: gameState.totalScore,
-          last_update: Date.now()
-        });
-      }
+      updatePlayer(gameState.myPlayerId, {
+        x: gameState.myPlayer.x,
+        y: gameState.myPlayer.y,
+        direction: gameState.myPlayer.direction,
+        length: gameState.myPlayer.length,
+        color: gameState.myPlayer.color,
+        score: gameState.myPlayer.score,
+        alive: gameState.myPlayer.alive,
+        lives: gameState.lives,
+        total_score: gameState.totalScore
+      });
     }
 
-    async function markPlayerDead() {
+    function markPlayerDead() {
       if (!gameState.myPlayer) return;
       
       gameState.myPlayer.alive = false;
       
-      const myData = allPlayersData.find(p => p.player_id === gameState.myPlayerId);
-      
-      if (myData) {
-        await window.dataSdk.update({
-          ...myData,
-          alive: false,
-          lives: gameState.lives,
-          total_score: gameState.totalScore,
-          last_update: Date.now()
-        });
-      }
+      updatePlayer(gameState.myPlayerId, {
+        alive: false,
+        lives: gameState.lives,
+        total_score: gameState.totalScore
+      });
     }
 
-    async function logoutPlayer() {
+    function logoutPlayer() {
       if (!gameState.myPlayer) return;
       
       gameState.running = false;
       
-      const myData = allPlayersData.find(p => p.player_id === gameState.myPlayerId);
-      
-      if (myData) {
-        await window.dataSdk.update({
-          ...myData,
-          alive: false,
-          lives: gameState.lives,
-          total_score: gameState.totalScore,
-          last_update: Date.now()
-        });
-      }
+      updatePlayer(gameState.myPlayerId, {
+        alive: false,
+        lives: gameState.lives,
+        total_score: gameState.totalScore
+      });
       
       showKillMessage('✅ Progresso salvo com sucesso!');
       
@@ -1971,9 +1737,9 @@
       noBtn.textContent = 'CONTINUAR JOGANDO';
       noBtn.style.cssText = 'padding: 15px 30px; font-size: 18px; background: linear-gradient(135deg, #00ff88, #00cc6a); color: #000; border: none; border-radius: 10px; cursor: pointer; font-weight: bold;';
       
-      yesBtn.addEventListener('click', async () => {
+      yesBtn.addEventListener('click', () => {
         document.body.removeChild(confirmOverlay);
-        await logoutPlayer();
+        logoutPlayer();
       });
       
       noBtn.addEventListener('click', () => {
@@ -1992,6 +1758,7 @@
 
     function updateGame() {
       updateKillerBot();
+      loadOtherPlayers();
       
       if (!gameState.running || !gameState.myPlayer || !gameState.myPlayer.alive) return;
       
@@ -2041,15 +1808,7 @@
           gameState.lifePowerUps.splice(i, 1);
           showKillMessage('💎 +1 VIDA COLETADA!');
           updateLivesDisplay();
-          
-          const myData = allPlayersData.find(p => p.player_id === gameState.myPlayerId);
-          if (myData) {
-            window.dataSdk.update({
-              ...myData,
-              lives: gameState.lives,
-              last_update: Date.now()
-            });
-          }
+          updatePlayer(gameState.myPlayerId, { lives: gameState.lives });
           break;
         }
       }
@@ -2299,7 +2058,7 @@
       }, 2000);
     }
 
-    async function gameOver(customMessage) {
+    function gameOver(customMessage) {
       gameState.lives--;
       
       if (gameState.lives > 0) {
@@ -2326,15 +2085,15 @@
       }
       
       gameState.running = false;
-      await markPlayerDead();
+      markPlayerDead();
       
       document.getElementById('finalLength').textContent = gameState.myPlayer.length;
       document.getElementById('finalKills').textContent = gameState.kills;
       document.getElementById('finalScore').textContent = gameState.totalScore;
       document.getElementById('livesRemaining').textContent = gameState.lives;
       
-      const sorted = [...allPlayersData]
-        .sort((a, b) => b.total_score - a.total_score);
+      const allPlayers = getAllPlayers();
+      const sorted = [...allPlayers].sort((a, b) => b.total_score - a.total_score);
       const myRank = sorted.findIndex(p => p.player_id === gameState.myPlayerId) + 1;
       document.getElementById('finalRank').textContent = `#${myRank}`;
       
@@ -2433,13 +2192,7 @@
       }, 2000);
     });
 
-    document.getElementById('adminBtn').addEventListener('click', async () => {
-      const sdkReady = await initDataSdk();
-      if (!sdkReady) {
-        showError('Erro ao conectar ao servidor');
-        return;
-      }
-      
+    document.getElementById('adminBtn').addEventListener('click', () => {
       const overlay = document.createElement('div');
       overlay.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: flex; align-items: center; justify-content: center; z-index: 4000;';
       
@@ -2513,19 +2266,22 @@
       }
     });
 
-    async function loadAdminData() {
-      const alivePlayers = allPlayersData.filter(p => p.alive);
+    function loadAdminData() {
+      const allPlayers = getAllPlayers();
+      const now = Date.now();
+      const PLAYER_INACTIVE_TIME = 10000;
+      const alivePlayers = allPlayers.filter(p => p.alive && (now - p.last_update < PLAYER_INACTIVE_TIME));
       
-      document.getElementById('adminTotalPlayers').textContent = allPlayersData.length;
+      document.getElementById('adminTotalPlayers').textContent = allPlayers.length;
       document.getElementById('adminAlivePlayers').textContent = alivePlayers.length;
       
       const playersList = document.getElementById('adminPlayersList');
       playersList.innerHTML = '';
       
-      if (allPlayersData.length === 0) {
+      if (allPlayers.length === 0) {
         playersList.innerHTML = '<div class="no-players-message">Nenhum jogador cadastrado ainda</div>';
       } else {
-        const sortedPlayers = [...allPlayersData].sort((a, b) => b.total_score - a.total_score);
+        const sortedPlayers = [...allPlayers].sort((a, b) => b.total_score - a.total_score);
         
         sortedPlayers.forEach(player => {
           const item = document.createElement('div');
@@ -2551,39 +2307,27 @@
           const addLifeBtn = document.createElement('button');
           addLifeBtn.className = 'admin-action-btn add-life-btn';
           addLifeBtn.textContent = '+❤️';
-          addLifeBtn.onclick = async () => {
-            const updated = await window.dataSdk.update({
-              ...player,
-              lives: player.lives + 1,
-              last_update: Date.now()
-            });
-            if (updated.isOk) {
-              showKillMessage(`+1 vida para ${player.player_name}!`);
-              loadAdminData();
-            }
+          addLifeBtn.onclick = () => {
+            updatePlayer(player.player_id, { lives: player.lives + 1 });
+            showKillMessage(`+1 vida para ${player.player_name}!`);
+            loadAdminData();
           };
           
           const removeLifeBtn = document.createElement('button');
           removeLifeBtn.className = 'admin-action-btn remove-life-btn';
           removeLifeBtn.textContent = '-❤️';
-          removeLifeBtn.onclick = async () => {
+          removeLifeBtn.onclick = () => {
             if (player.lives > 0) {
-              const updated = await window.dataSdk.update({
-                ...player,
-                lives: player.lives - 1,
-                last_update: Date.now()
-              });
-              if (updated.isOk) {
-                showKillMessage(`-1 vida para ${player.player_name}!`);
-                loadAdminData();
-              }
+              updatePlayer(player.player_id, { lives: player.lives - 1 });
+              showKillMessage(`-1 vida para ${player.player_name}!`);
+              loadAdminData();
             }
           };
           
           const kickBtn = document.createElement('button');
           kickBtn.className = 'admin-action-btn kick-btn';
           kickBtn.textContent = 'EXPULSAR';
-          kickBtn.onclick = async () => {
+          kickBtn.onclick = () => {
             const confirmOverlay = document.createElement('div');
             confirmOverlay.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: flex; align-items: center; justify-content: center; z-index: 5000;';
             
@@ -2605,8 +2349,8 @@
             noBtn.textContent = 'NÃO';
             noBtn.style.cssText = 'padding: 12px 30px; font-size: 18px; background: rgba(0,0,0,0.5); color: #fff; border: none; border-radius: 10px; cursor: pointer; font-weight: bold;';
             
-            yesBtn.addEventListener('click', async () => {
-              await window.dataSdk.delete(player);
+            yesBtn.addEventListener('click', () => {
+              deletePlayer(player.player_id);
               document.body.removeChild(confirmOverlay);
               loadAdminData();
             });
@@ -2645,7 +2389,7 @@
       }
     }
 
-    document.getElementById('startBtn').addEventListener('click', async () => {
+    document.getElementById('startBtn').addEventListener('click', () => {
       const name = document.getElementById('nameInput').value.trim();
       const password = document.getElementById('passwordInput').value.trim();
       
@@ -2661,55 +2405,98 @@
         return;
       }
       
-      const btn = document.getElementById('startBtn');
-      const originalText = btn.textContent;
-      btn.disabled = true;
-      btn.textContent = '⏳ CONECTANDO...';
-      btn.style.opacity = '0.6';
-      btn.style.cursor = 'wait';
-      
-      document.getElementById('authError').style.display = 'none';
-      document.getElementById('authSuccess').style.display = 'none';
-      
-      try {
-        const sdkReady = await initDataSdk();
-        if (!sdkReady) {
-          btn.disabled = false;
-          btn.textContent = originalText;
-          btn.style.opacity = '1';
-          btn.style.cursor = 'pointer';
+      if (authMode === 'register') {
+        const newPlayer = createPlayer(name, password, gameState.isAdmin);
+        if (!newPlayer) return;
+        
+        gameState.myPlayerId = newPlayer.player_id;
+        gameState.myPassword = newPlayer.password;
+        gameState.isAdmin = newPlayer.is_admin;
+        gameState.kills = 0;
+        gameState.lives = 3;
+        gameState.totalScore = 0;
+        gameState.lastLifeScore = 0;
+        
+        gameState.myPlayer = {
+          id: newPlayer.player_id,
+          name: newPlayer.player_name,
+          x: newPlayer.x,
+          y: newPlayer.y,
+          direction: 'right',
+          nextDirection: 'right',
+          segments: [
+            {x: newPlayer.x, y: newPlayer.y},
+            {x: newPlayer.x - GRID_SIZE, y: newPlayer.y},
+            {x: newPlayer.x - GRID_SIZE * 2, y: newPlayer.y}
+          ],
+          length: 3,
+          color: newPlayer.color,
+          alive: true,
+          score: 0
+        };
+        
+        updateLivesDisplay();
+        showSuccess('Conta criada com sucesso!');
+      } else {
+        const existing = getPlayerByName(name);
+        
+        if (!existing) {
+          showError('Jogador não encontrado! Crie uma conta primeiro.');
           return;
         }
         
-        btn.textContent = authMode === 'register' ? '✨ CRIANDO CONTA...' : '⏳ FAZENDO LOGIN...';
-        
-        let success = false;
-        
-        if (authMode === 'register') {
-          success = await createPlayer(name, password, gameState.isAdmin);
-        } else {
-          success = await loginPlayer(name, password);
-        }
-        
-        if (!success) {
-          btn.disabled = false;
-          btn.textContent = originalText;
-          btn.style.opacity = '1';
-          btn.style.cursor = 'pointer';
+        const passwordHash = hashPassword(password);
+        if (existing.password !== passwordHash) {
+          showError('Senha incorreta!');
           return;
         }
         
-        btn.textContent = '✅ INICIANDO JOGO...';
+        gameState.myPlayerId = existing.player_id;
+        gameState.myPassword = passwordHash;
+        gameState.isAdmin = existing.is_admin;
+        gameState.lives = existing.lives;
+        gameState.totalScore = existing.total_score;
         
-        await new Promise(resolve => setTimeout(resolve, 500));
+        const startX = Math.floor(Math.random() * (GAME_WIDTH / GRID_SIZE)) * GRID_SIZE;
+        const startY = Math.floor(Math.random() * (GAME_HEIGHT / GRID_SIZE)) * GRID_SIZE;
         
+        gameState.myPlayer = {
+          id: existing.player_id,
+          name: existing.player_name,
+          x: startX,
+          y: startY,
+          direction: 'right',
+          nextDirection: 'right',
+          segments: [
+            {x: startX, y: startY},
+            {x: startX - GRID_SIZE, y: startY},
+            {x: startX - GRID_SIZE * 2, y: startY}
+          ],
+          length: 3,
+          color: existing.color,
+          alive: true,
+          score: 0
+        };
+        
+        gameState.kills = 0;
+        gameState.lastLifeScore = Math.floor(gameState.totalScore / 1000) * 1000;
+        
+        updatePlayer(existing.player_id, {
+          x: startX,
+          y: startY,
+          direction: 'right',
+          length: 3,
+          alive: true,
+          score: 0
+        });
+        
+        updateLivesDisplay();
+        showSuccess('Login realizado com sucesso!');
+      }
+      
+      setTimeout(() => {
         document.getElementById('nameInputOverlay').style.display = 'none';
         gameState.running = true;
-        
-        btn.disabled = false;
-        btn.textContent = originalText;
-        btn.style.opacity = '1';
-        btn.style.cursor = 'pointer';
         
         setInterval(updateGame, UPDATE_INTERVAL);
         
@@ -2720,16 +2507,10 @@
           }
         }
         gameLoop();
-      } catch (error) {
-        showError('Erro inesperado. Recarregue a página.');
-        btn.disabled = false;
-        btn.textContent = originalText;
-        btn.style.opacity = '1';
-        btn.style.cursor = 'pointer';
-      }
+      }, 1000);
     });
 
-    document.getElementById('restartBtn').addEventListener('click', async () => {
+    document.getElementById('restartBtn').addEventListener('click', () => {
       document.getElementById('gameOver').classList.remove('show');
       
       if (gameState.lives > 0) {
@@ -2750,22 +2531,16 @@
         gameState.myPlayer.score = 0;
         gameState.kills = 0;
         
-        const myData = allPlayersData.find(p => p.player_id === gameState.myPlayerId);
-        
-        if (myData) {
-          await window.dataSdk.update({
-            ...myData,
-            x: startX,
-            y: startY,
-            direction: 'right',
-            length: 3,
-            alive: true,
-            score: 0,
-            lives: gameState.lives,
-            total_score: gameState.totalScore,
-            last_update: Date.now()
-          });
-        }
+        updatePlayer(gameState.myPlayerId, {
+          x: startX,
+          y: startY,
+          direction: 'right',
+          length: 3,
+          alive: true,
+          score: 0,
+          lives: gameState.lives,
+          total_score: gameState.totalScore
+        });
         
         updateLivesDisplay();
         gameState.running = true;
@@ -2784,11 +2559,11 @@
       }
     });
 
-    window.addEventListener('beforeunload', async () => {
+    window.addEventListener('beforeunload', () => {
       if (gameState.myPlayerId) {
-        await markPlayerDead();
+        markPlayerDead();
       }
     });
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a8fd220872ef41e',t:'MTc2NDg5ODY3Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a8fdd1d5637f41e',t:'MTc2NDg5OTEyMy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>

@@ -1418,36 +1418,81 @@
       if (initPromise) return initPromise;
       
       initPromise = (async () => {
-        try {
-          if (!window.dataSdk) {
-            await new Promise(resolve => setTimeout(resolve, 100));
+        const maxRetries = 5;
+        let attempt = 0;
+        
+        while (attempt < maxRetries) {
+          try {
+            attempt++;
+            
+            // Aguarda o SDK carregar
+            let waitTime = 0;
+            while (!window.dataSdk && waitTime < 3000) {
+              await new Promise(resolve => setTimeout(resolve, 100));
+              waitTime += 100;
+            }
+            
             if (!window.dataSdk) {
-              showError('SDK não carregado. Recarregue a página.');
+              if (attempt < maxRetries) {
+                await new Promise(resolve => setTimeout(resolve, 500));
+                continue;
+              }
+              showError('SDK não disponível. Recarregue a página.');
               return false;
             }
-          }
-          
-          const result = await window.dataSdk.init(dataHandler);
-          if (result.isError) {
-            showError('Erro ao conectar: ' + result.error.message);
+            
+            const result = await window.dataSdk.init(dataHandler);
+            
+            if (result.isError) {
+              if (attempt < maxRetries) {
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                continue;
+              }
+              showError('Servidor indisponível. Tente novamente.');
+              return false;
+            }
+            
+            sdkInitialized = true;
+            return true;
+            
+          } catch (error) {
+            if (attempt < maxRetries) {
+              await new Promise(resolve => setTimeout(resolve, 1000));
+              continue;
+            }
+            showError('Erro de conexão. Recarregue a página.');
             return false;
           }
-          sdkInitialized = true;
-          return true;
-        } catch (error) {
-          showError('Erro de conexão: ' + error.message);
-          return false;
         }
+        
+        return false;
       })();
       
       return initPromise;
     }
     
     // Inicializa automaticamente quando a página carrega
-    window.addEventListener('load', async () => {
-      await new Promise(resolve => setTimeout(resolve, 200));
-      await initDataSdk();
-    });
+    let autoInitStarted = false;
+    
+    async function startAutoInit() {
+      if (autoInitStarted) return;
+      autoInitStarted = true;
+      
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      const success = await initDataSdk();
+      if (success) {
+        console.log('✅ Conectado ao servidor!');
+      } else {
+        console.log('⚠️ Falha na conexão. Clique em CRIAR CONTA/LOGIN para tentar novamente.');
+      }
+    }
+    
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', startAutoInit);
+    } else {
+      startAutoInit();
+    }
 
     async function playerExists(name) {
       return allPlayersData.find(p => p.player_name.toLowerCase() === name.toLowerCase());
@@ -2577,7 +2622,7 @@
           return;
         }
         
-        btn.textContent = authMode === 'register' ? '⏳ CRIANDO CONTA...' : '⏳ FAZENDO LOGIN...';
+        btn.textContent = authMode === 'register' ? '����� CRIANDO CONTA...' : '⏳ FAZENDO LOGIN...';
         
         let success = false;
         
@@ -2686,5 +2731,5 @@
       }
     });
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a8fc34cc398f41e',t:'MTc2NDg5ODA2NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a8fc62224acf41e',t:'MTc2NDg5ODE4MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>

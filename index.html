@@ -662,18 +662,40 @@
         opacity: 1;
       }
     }
+
+    .sound-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(0, 255, 136, 0.3);
+      border: 2px solid #00ff88;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 24px;
+      z-index: 9999;
+    }
+
+    .sound-toggle.muted {
+      background: rgba(255, 82, 82, 0.3);
+      border-color: #ff5252;
+    }
   </style>
   <style>@view-transition { navigation: auto; }</style>
   <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
  </head>
- <body>
+ <body><button type="button" class="sound-toggle" id="soundToggle">🔊</button>
   <div class="app-wrapper"><!-- Login Screen -->
    <div class="screen active" id="screenLogin">
     <div class="login-container">
      <div class="login-card">
       <div class="logo">
        <div class="logo-emoji">
-        �����
+        🐍
        </div>
        <h1 class="app-title-login" id="appTitleLogin">SNAKE MULTIPLAYER</h1>
        <p class="welcome-msg" id="welcomeMsg">Compete com jogadores do mundo todo!</p>
@@ -712,7 +734,7 @@
      <div class="stats-row">
       <div class="stat-box">
        <div class="stat-emoji">
-        ��
+        🏆
        </div>
        <div class="stat-number" id="statMyScore">
         0
@@ -756,7 +778,7 @@
       </div>
       <div class="stat-box">
        <div class="stat-emoji">
-        ��
+        🌍
        </div>
        <div class="stat-number" id="statTotal">
         0
@@ -768,6 +790,8 @@
      </div>
      <div id="adminSection" class="admin-section" style="display: none;">
       <h3 class="section-header">🛡️ Painel Admin</h3>
+      <div style="margin-bottom: 15px;"><button type="button" class="btn-primary" id="btnResetAllPasswords" style="padding: 12px; font-size: 14px;"> 🔑 Resetar TODAS as senhas para "1234" </button>
+      </div>
       <div id="adminUsersList"></div>
      </div>
      <div class="action-row"><button type="button" class="btn-action btn-play" id="btnPlay"> <span style="font-size: 24px;">🌍</span> <span id="btnPlayText">JOGAR AGORA</span> </button> <button type="button" class="btn-action btn-solo" id="btnSolo"> <span style="font-size: 24px;">⚡</span> <span id="btnSoloText">MODO SOLO</span> </button>
@@ -786,7 +810,7 @@
      <div class="game-area">
       <div class="kill-message" id="killMessage"></div>
       <canvas id="canvas" width="300" height="300"></canvas>
-      <div class="controls-grid"><button type="button" class="control-button ctrl-up" id="ctrlUp">��</button> <button type="button" class="control-button ctrl-left" id="ctrlLeft">◄</button> <button type="button" class="control-button ctrl-right" id="ctrlRight">►</button> <button type="button" class="control-button ctrl-down" id="ctrlDown">���</button>
+      <div class="controls-grid"><button type="button" class="control-button ctrl-up" id="ctrlUp">▲</button> <button type="button" class="control-button ctrl-left" id="ctrlLeft">◄</button> <button type="button" class="control-button ctrl-right" id="ctrlRight">�����</button> <button type="button" class="control-button ctrl-down" id="ctrlDown">▼</button>
       </div>
       <div class="game-over-modal" id="gameOverModal">
        <div class="game-over-title">
@@ -812,18 +836,106 @@
       solo_btn_text: "MODO SOLO"
     };
 
-    // Paleta de cores únicas para snakes
+    // 50 cores vibrantes para snakes
     const SNAKE_COLORS = [
-      '#00ff88', '#ff5252', '#ffeb3b', '#00bcd4', 
-      '#e91e63', '#9c27b0', '#ff9800', '#4caf50',
-      '#f44336', '#2196f3', '#ffc107', '#8bc34a',
-      '#ff6f00', '#00e676', '#ff1744', '#00e5ff'
+      '#00ff88', '#ff5252', '#ffeb3b', '#00bcd4', '#e91e63', 
+      '#9c27b0', '#ff9800', '#4caf50', '#f44336', '#2196f3',
+      '#ffc107', '#8bc34a', '#ff6f00', '#00e676', '#ff1744',
+      '#00e5ff', '#ff4081', '#7c4dff', '#18ffff', '#76ff03',
+      '#ffff00', '#ff3d00', '#651fff', '#ffd600', '#ff6e40', 
+      '#69f0ae', '#40c4ff', '#ff80ab', '#ea80fc', '#b388ff',
+      '#82b1ff', '#84ffff', '#a7ffeb', '#ccff90', '#f4ff81',
+      '#ffff8d', '#ffe57f', '#ffd180', '#ff9e80', '#bcaaa4',
+      '#90caf9', '#80deea', '#80cbc4', '#c5e1a5', '#e6ee9c',
+      '#fff59d', '#ffe082', '#ffcc80', '#ffab91', '#ce93d8'
     ];
 
     let currentUser = null;
     let allUsers = [];
     let isLoginForm = true;
     let isSoloMode = false;
+
+    // Audio System
+    let audioContext = null;
+    let soundEnabled = true;
+
+    function initAudio() {
+      try {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const savedSound = localStorage.getItem('snake_sound_enabled');
+        if (savedSound !== null) {
+          soundEnabled = savedSound === 'true';
+        }
+        updateSoundIcon();
+      } catch (e) {
+        soundEnabled = false;
+      }
+    }
+
+    function playSound(frequency, duration, type = 'sine', volume = 0.3) {
+      if (!soundEnabled || !audioContext) return;
+      try {
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        oscillator.frequency.value = frequency;
+        oscillator.type = type;
+        
+        gainNode.gain.setValueAtTime(volume, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+        
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + duration);
+      } catch (e) {}
+    }
+
+    function playSoundMove() {
+      playSound(150, 0.03, 'square', 0.1);
+    }
+
+    function playSoundEat() {
+      playSound(523, 0.1, 'sine', 0.3);
+      setTimeout(() => playSound(659, 0.15, 'sine', 0.3), 50);
+    }
+
+    function playSoundKill() {
+      // Melodia de vitória épica ao eliminar uma cobra
+      playSound(523, 0.1, 'square', 0.35);  // C
+      setTimeout(() => playSound(659, 0.1, 'square', 0.35), 100);  // E
+      setTimeout(() => playSound(784, 0.1, 'square', 0.35), 200);  // G
+      setTimeout(() => playSound(1047, 0.25, 'square', 0.4), 300); // C (oitava acima)
+    }
+
+    function playSoundDie() {
+      playSound(200, 0.1, 'sawtooth', 0.3);
+      setTimeout(() => playSound(150, 0.2, 'sawtooth', 0.3), 100);
+      setTimeout(() => playSound(100, 0.3, 'sawtooth', 0.3), 200);
+    }
+
+    function playSoundHeart() {
+      playSound(800, 0.1, 'sine', 0.3);
+      setTimeout(() => playSound(1000, 0.1, 'sine', 0.3), 80);
+    }
+
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      localStorage.setItem('snake_sound_enabled', soundEnabled);
+      updateSoundIcon();
+      if (soundEnabled) {
+        playSoundEat();
+      }
+    }
+
+    function updateSoundIcon() {
+      const btn = document.getElementById('soundToggle');
+      if (btn) {
+        btn.textContent = soundEnabled ? '🔊' : '🔇';
+        btn.classList.toggle('muted', !soundEnabled);
+      }
+    }
 
     // Game Variables
     const canvas = document.getElementById('canvas');
@@ -875,6 +987,11 @@
         }
       }
       return SNAKE_COLORS[Math.floor(Math.random() * SNAKE_COLORS.length)];
+    }
+
+    function getFirstName(fullName) {
+      if (!fullName) return '';
+      return fullName.trim().split(/\s+/)[0];
     }
 
     async function registerUser(username, email, password) {
@@ -1000,7 +1117,7 @@
     function refreshUI() {
       if (!currentUser) return;
 
-      document.getElementById('userNameDisplay').textContent = currentUser.username;
+      document.getElementById('userNameDisplay').textContent = getFirstName(currentUser.username);
       document.getElementById('userRoleBadge').textContent = currentUser.role.toUpperCase();
       document.getElementById('userRoleBadge').classList.toggle('admin', currentUser.role === 'admin');
       
@@ -1036,7 +1153,7 @@
         div.className = 'admin-user-item';
         div.innerHTML = `
           <div class="admin-user-info">
-            <strong>${user.username}</strong>
+            <strong>${getFirstName(user.username)}</strong>
             <small>📧 ${user.email || 'Sem email'} | Role: ${user.role} | Score: ${user.score} | ❤️ ${user.lives || 3} | Kills: ${user.kills || 0} | ${user.is_online ? '🟢 Online' : '⚫ Offline'}</small>
           </div>
           <div class="admin-controls">
@@ -1084,11 +1201,37 @@
       const result = await window.dataSdk.update(user);
       
       if (result.isOk) {
-        showMsg(`🔑 Senha de ${user.username} resetada para: 1234`, 'success');
+        showMsg(`🔑 Senha de ${getFirstName(user.username)} resetada para: 1234`, 'success');
         setTimeout(() => hideMsg(), 5000);
       } else {
         showMsg('Erro ao resetar senha', 'error');
       }
+    }
+
+    async function resetAllPasswords() {
+      showMsg('🔑 Resetando todas as senhas...', 'success');
+      
+      let successCount = 0;
+      let errorCount = 0;
+      
+      for (let user of allUsers) {
+        user.password = '1234';
+        const result = await window.dataSdk.update(user);
+        
+        if (result.isOk) {
+          successCount++;
+        } else {
+          errorCount++;
+        }
+      }
+      
+      if (errorCount === 0) {
+        showMsg(`✅ ${successCount} senhas resetadas para "1234" com sucesso!`, 'success');
+      } else {
+        showMsg(`⚠️ ${successCount} resetadas, ${errorCount} falharam`, 'error');
+      }
+      
+      setTimeout(() => hideMsg(), 5000);
     }
 
     function renderRanking() {
@@ -1133,7 +1276,7 @@
 
       otherSnakes = onlineUsers.map(user => ({
         userId: user.user_id,
-        username: user.username,
+        username: getFirstName(user.username),
         color: user.snake_color || '#ff5252',
         x: Math.floor(Math.random() * gridWidth),
         y: Math.floor(Math.random() * gridHeight),
@@ -1200,19 +1343,30 @@
       });
     }
 
+    function getNextColor(currentColor) {
+      const currentIndex = SNAKE_COLORS.indexOf(currentColor);
+      if (currentIndex === -1) return SNAKE_COLORS[0];
+      
+      const nextIndex = (currentIndex + 1) % SNAKE_COLORS.length;
+      return SNAKE_COLORS[nextIndex];
+    }
+
     function checkCollisionWithOtherSnakes() {
       for (let enemySnake of otherSnakes) {
         if (snake.x === enemySnake.x && snake.y === enemySnake.y) {
           showKillMessage(`💀 Você eliminou ${enemySnake.username}!`);
-          currentSnakeColor = enemySnake.color;
+          playSoundKill();
+          
+          // Avança para próxima cor na sequência
+          currentSnakeColor = getNextColor(currentSnakeColor);
           if (currentUser) {
-            currentUser.snake_color = enemySnake.color;
+            currentUser.snake_color = currentSnakeColor;
             currentUser.kills = (currentUser.kills || 0) + 1;
           }
+          
           score += 50;
           document.getElementById('currentScore').textContent = score;
           
-          // Dropar 3 corações se a snake tinha mais de 1000 pontos
           if (enemySnake.length > 100) {
             for (let i = 0; i < 3; i++) {
               hearts.push({
@@ -1230,12 +1384,13 @@
         for (let segment of enemySnake.body) {
           if (snake.x === segment.x && snake.y === segment.y) {
             lives--;
+            playSoundDie();
             document.getElementById('currentLives').textContent = lives;
             
             if (lives <= 0) {
               endGame(true, enemySnake.username);
             } else {
-              showKillMessage(`����� ${enemySnake.username} te acertou! Restam ${lives} vidas`);
+              showKillMessage(`💥 ${enemySnake.username} te acertou! Restam ${lives} vidas`);
               snake = { x: 10, y: 10, dx: 1, dy: 0, body: [], length: 5 };
             }
             return;
@@ -1245,11 +1400,15 @@
         for (let segment of snake.body) {
           if (enemySnake.x === segment.x && enemySnake.y === segment.y) {
             showKillMessage(`💀 Você eliminou ${enemySnake.username}!`);
-            currentSnakeColor = enemySnake.color;
+            playSoundKill();
+            
+            // Avança para próxima cor na sequência
+            currentSnakeColor = getNextColor(currentSnakeColor);
             if (currentUser) {
-              currentUser.snake_color = enemySnake.color;
+              currentUser.snake_color = currentSnakeColor;
               currentUser.kills = (currentUser.kills || 0) + 1;
             }
+            
             score += 50;
             document.getElementById('currentScore').textContent = score;
             otherSnakes = otherSnakes.filter(s => s.userId !== enemySnake.userId);
@@ -1295,10 +1454,12 @@
       if (snake.x === apple.x && snake.y === apple.y) {
         snake.length++;
         score += 10;
+        playSoundEat();
         document.getElementById('currentScore').textContent = score;
         
         if (Math.floor(score / 500) > Math.floor(lastLifeScore / 500)) {
           lives++;
+          playSoundHeart();
           document.getElementById('currentLives').textContent = lives;
           showKillMessage('❤️ +1 VIDA! (500 pontos)');
         }
@@ -1308,12 +1469,12 @@
         apple.y = Math.floor(Math.random() * gridHeight);
       }
 
-      // Checar colisão com corações
       for (let i = hearts.length - 1; i >= 0; i--) {
         if (snake.x === hearts[i].x && snake.y === hearts[i].y) {
           lives++;
+          playSoundHeart();
           document.getElementById('currentLives').textContent = lives;
-          showKillMessage('❤����� +1 VIDA coletada!');
+          showKillMessage('❤️ +1 VIDA coletada!');
           hearts.splice(i, 1);
         }
       }
@@ -1323,6 +1484,7 @@
         checkCollisionWithOtherSnakes();
       }
 
+      playSoundMove();
       drawGame();
     }
 
@@ -1348,7 +1510,6 @@
       ctx.fillStyle = '#ff5252';
       ctx.fillRect(apple.x * cellSize + 1, apple.y * cellSize + 1, cellSize - 2, cellSize - 2);
 
-      // Desenhar corações
       hearts.forEach(heart => {
         ctx.fillStyle = '#ff69b4';
         ctx.beginPath();
@@ -1356,7 +1517,6 @@
         const centerY = heart.y * cellSize + cellSize / 2;
         const size = cellSize / 3;
         
-        // Desenhar coração simplificado
         ctx.arc(centerX - size / 2, centerY - size / 2, size / 2, 0, Math.PI * 2);
         ctx.fill();
         ctx.beginPath();
@@ -1384,16 +1544,39 @@
         ctx.fillRect(segment.x * cellSize + 1, segment.y * cellSize + 1, cellSize - 2, cellSize - 2);
       });
       ctx.globalAlpha = 1;
+
+      // Desenhar nome do jogador na cabeça da cobra
+      if (currentUser && snake.body.length > 0) {
+        const head = snake.body[snake.body.length - 1];
+        ctx.fillStyle = '#fff';
+        ctx.font = 'bold 10px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'bottom';
+        ctx.fillText(getFirstName(currentUser.username), head.x * cellSize + cellSize / 2, head.y * cellSize - 2);
+      }
+
+      // Desenhar nomes dos inimigos
+      otherSnakes.forEach(enemySnake => {
+        if (enemySnake.body.length > 0) {
+          const head = enemySnake.body[enemySnake.body.length - 1];
+          ctx.fillStyle = '#fff';
+          ctx.font = 'bold 10px Arial';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'bottom';
+          ctx.fillText(enemySnake.username, head.x * cellSize + cellSize / 2, head.y * cellSize - 2);
+        }
+      });
     }
 
     function loseLife() {
       lives--;
+      playSoundDie();
       document.getElementById('currentLives').textContent = lives;
       
       if (lives <= 0) {
         endGame(false);
       } else {
-        showKillMessage(`���� Perdeu 1 vida! Restam ${lives}`);
+        showKillMessage(`💥 Perdeu 1 vida! Restam ${lives}`);
         snake = { x: 10, y: 10, dx: 1, dy: 0, body: [], length: 5 };
       }
     }
@@ -1401,6 +1584,7 @@
     async function endGame(killedByOther = false, killerName = '') {
       isPlaying = false;
       clearInterval(gameInterval);
+      playSoundDie();
 
       if (!isSoloMode && currentUser) {
         if (score > (currentUser.score || 0)) {
@@ -1456,6 +1640,14 @@
     document.getElementById('btnExitGame').addEventListener('click', exitGame);
     document.getElementById('btnRestart').addEventListener('click', () => startGame(isSoloMode));
     document.getElementById('btnBackMenu').addEventListener('click', exitGame);
+    document.getElementById('soundToggle').addEventListener('click', toggleSound);
+    
+    setTimeout(() => {
+      const resetAllBtn = document.getElementById('btnResetAllPasswords');
+      if (resetAllBtn) {
+        resetAllBtn.addEventListener('click', resetAllPasswords);
+      }
+    }, 500);
 
     document.addEventListener('keydown', (e) => {
       if (!isPlaying) return;
@@ -1510,55 +1702,52 @@
       ]);
     }
 
-    // Inicialização dos SDKs
-    (function initializeSdks() {
+    function initializeSdks() {
       let attempts = 0;
-      const maxAttempts = 100;
+      const maxAttempts = 50;
       
-      const tryInit = async () => {
+      function tryInit() {
         attempts++;
         
-        // Tentar inicializar Element SDK
-        if (window.elementSdk && !window.elementSdkInitialized) {
+        if (window.elementSdk && typeof window.elementSdk.init === 'function') {
           try {
             window.elementSdk.init({
-              defaultConfig,
-              onConfigChange,
-              mapToCapabilities,
-              mapToEditPanelValues
+              defaultConfig: defaultConfig,
+              onConfigChange: onConfigChange,
+              mapToCapabilities: mapToCapabilities,
+              mapToEditPanelValues: mapToEditPanelValues
             });
-            window.elementSdkInitialized = true;
           } catch (e) {
-            console.error('Element SDK error:', e);
+            console.error('Element SDK init error:', e);
           }
         }
         
-        // Tentar inicializar Data SDK
-        if (window.dataSdk && !window.dataSdkInitialized) {
-          try {
-            await initializeApp();
-            window.dataSdkInitialized = true;
-            return; // Sucesso! Parar tentativas
-          } catch (e) {
-            console.error('Data SDK error:', e);
-          }
+        if (window.dataSdk && typeof window.dataSdk.init === 'function') {
+          initializeApp().catch(function(error) {
+            console.error('Data SDK init error:', error);
+            if (attempts >= maxAttempts) {
+              showMsg('Erro ao conectar. Recarregue a página.', 'error');
+            }
+          });
+        } else if (attempts < maxAttempts) {
+          setTimeout(tryInit, 100);
+        } else {
+          showMsg('Erro ao carregar sistema. Recarregue a página.', 'error');
         }
-        
-        // Se ainda não inicializou e não atingiu o limite, tentar novamente
-        if (!window.dataSdkInitialized && attempts < maxAttempts) {
-          setTimeout(tryInit, 50);
-        } else if (attempts >= maxAttempts) {
-          showMsg('⚠️ Erro ao carregar. Recarregue a página.', 'error');
-        }
-      };
-      
-      // Iniciar tentativas
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', tryInit);
-      } else {
-        tryInit();
       }
-    })();
+      
+      tryInit();
+    }
+    
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => {
+        initAudio();
+        initializeSdks();
+      });
+    } else {
+      initAudio();
+      setTimeout(initializeSdks, 100);
+    }
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a94bc33e4f08aef',t:'MTc2NDk1MDIwMy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a94ed9e904c8aef',t:'MTc2NDk1MjIyNy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>

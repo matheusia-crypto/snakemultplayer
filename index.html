@@ -44,8 +44,15 @@
     .hud-title {
       font-size: 20px;
       color: #00ff88;
+      margin-bottom: 5px;
+      text-align: center;
+    }
+    .hud-email {
+      font-size: 12px;
+      color: #888;
       margin-bottom: 15px;
       text-align: center;
+      word-break: break-all;
     }
     .stat {
       display: flex;
@@ -277,16 +284,17 @@
     .logout-btn:hover { transform: translateX(-50%) translateY(-3px); }
     .login-mode-btn {
       margin-top: 15px;
-      padding: 8px 20px;
-      font-size: 14px;
-      background: rgba(255, 255, 255, 0.1);
+      padding: 12px 30px;
+      font-size: 16px;
+      background: rgba(255, 255, 255, 0.2);
       color: #fff;
-      border: 2px solid #fff;
-      border-radius: 8px;
+      border: 3px solid #fff;
+      border-radius: 10px;
       cursor: pointer;
       font-weight: bold;
+      width: 100%;
     }
-    .login-mode-btn:hover { background: rgba(255, 255, 255, 0.2); }
+    .login-mode-btn:hover { background: rgba(255, 255, 255, 0.3); transform: translateY(-2px); }
     .error-message {
       background: rgba(255, 107, 107, 0.2);
       color: #ff6b6b;
@@ -457,16 +465,17 @@
      </div>
      <div class="name-input-subtitle" id="authSubtitle">
       Crie sua conta ou faça login!
-     </div><label class="input-label" for="nameInput">Nome do Jogador</label> <input type="text" id="nameInput" class="name-input" placeholder="Seu nome" maxlength="15"> <label class="input-label" for="passwordInput">Senha</label> <input type="password" id="passwordInput" class="name-input" placeholder="Sua senha">
+     </div><label class="input-label" for="nameInput">Nome do Jogador</label> <input type="text" id="nameInput" class="name-input" placeholder="Seu nome" maxlength="15"> <label class="input-label" for="emailInput">Email</label> <input type="email" id="emailInput" class="name-input" placeholder="seu@email.com"> <label class="input-label" for="passwordInput">Senha</label> <input type="password" id="passwordInput" class="name-input" placeholder="Sua senha">
      <div class="error-message" id="authError"></div>
      <div class="success-message" id="authSuccess"></div><br><button class="start-btn" id="startBtn">CRIAR CONTA E JOGAR</button> <button class="login-mode-btn" id="loginModeBtn">JÁ TENHO CONTA - FAZER LOGIN</button> <button class="login-mode-btn" id="storeBtn" style="background: linear-gradient(135deg, #ffd700, #ffed4e); color: #000; margin-top: 10px;">🛒 LOJA DE VIDAS</button> <button class="login-mode-btn" id="adminBtn" style="background: linear-gradient(135deg, #a29bfe, #6c5ce7); margin-top: 5px;">👑 ADMIN</button>
     </div>
    </div>
    <canvas id="gameCanvas" width="360" height="640"></canvas>
    <div class="hud">
-    <div class="hud-title">
+    <div class="hud-title" id="playerNameDisplay">
      ⚔️ SEU STATUS
     </div>
+    <div class="hud-email" id="playerEmailDisplay"></div>
     <div class="stat">
      <span class="stat-label">🐍 Tamanho:</span><span class="stat-value" id="length">3</span>
     </div>
@@ -627,7 +636,7 @@
       const players = getAllPlayers();
       return players.find(p => p.player_name.toLowerCase() === name.toLowerCase());
     }
-    function createPlayer(name, password) {
+    function createPlayer(name, password, email) {
       const existing = getPlayerByName(name);
       if (existing) {
         showError('Este nome já está em uso! Escolha outro nome.');
@@ -642,6 +651,7 @@
       const newPlayer = {
         player_id: playerId,
         player_name: name,
+        email: email,
         password: passwordHash,
         x: startX,
         y: startY,
@@ -1192,7 +1202,7 @@
           name.textContent = player.player_name + (player.alive ? ' ✅' : ' 💀');
           const stats = document.createElement('div');
           stats.className = 'admin-player-stats';
-          stats.textContent = `Score: ${player.total_score} | Vidas: ${player.lives} | Tamanho: ${player.length}`;
+          stats.textContent = `📧 ${player.email || 'Sem email'} | Score: ${player.total_score} | Vidas: ${player.lives} | Tamanho: ${player.length}`;
           info.appendChild(name);
           info.appendChild(stats);
           const actions = document.createElement('div');
@@ -1261,11 +1271,14 @@
 
     document.getElementById('startBtn').addEventListener('click', () => {
       const name = document.getElementById('nameInput').value.trim();
+      const email = document.getElementById('emailInput').value.trim();
       const password = document.getElementById('passwordInput').value.trim();
       if (!name) { showError('Digite seu nome!'); document.getElementById('nameInput').focus(); return; }
+      if (authMode === 'register' && !email) { showError('Digite seu email!'); document.getElementById('emailInput').focus(); return; }
+      if (authMode === 'register' && !email.includes('@')) { showError('Email inválido!'); document.getElementById('emailInput').focus(); return; }
       if (!password) { showError('Digite sua senha!'); document.getElementById('passwordInput').focus(); return; }
       if (authMode === 'register') {
-        const newPlayer = createPlayer(name, password);
+        const newPlayer = createPlayer(name, password, email);
         if (!newPlayer) return;
         gameState.myPlayerId = newPlayer.player_id;
         gameState.myPassword = newPlayer.password;
@@ -1275,6 +1288,7 @@
         gameState.myPlayer = {
           id: newPlayer.player_id,
           name: newPlayer.player_name,
+          email: newPlayer.email,
           x: newPlayer.x,
           y: newPlayer.y,
           direction: 'right',
@@ -1285,6 +1299,8 @@
           alive: true,
           score: 0
         };
+        document.getElementById('playerNameDisplay').textContent = newPlayer.player_name;
+        document.getElementById('playerEmailDisplay').textContent = newPlayer.email;
         updateLivesDisplay();
         showSuccess('Conta criada com sucesso!');
       } else {
@@ -1301,6 +1317,7 @@
         gameState.myPlayer = {
           id: existing.player_id,
           name: existing.player_name,
+          email: existing.email,
           x: startX,
           y: startY,
           direction: 'right',
@@ -1312,6 +1329,8 @@
           score: 0
         };
         gameState.kills = 0;
+        document.getElementById('playerNameDisplay').textContent = existing.player_name;
+        document.getElementById('playerEmailDisplay').textContent = existing.email || 'Sem email';
         updatePlayer(existing.player_id, { x: startX, y: startY, direction: 'right', length: 3, alive: true, score: 0 });
         updateLivesDisplay();
         showSuccess('Login realizado!');
@@ -1351,5 +1370,5 @@
       if (gameState.myPlayerId) markPlayerDead();
     });
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a8fe6ed67e1f41e',t:'MTc2NDg5OTUyNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a8fee70543cf41e',t:'MTc2NDg5OTgzMi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
